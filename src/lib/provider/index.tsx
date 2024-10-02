@@ -1,5 +1,11 @@
 "use client";
-
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import * as React from "react";
 import { NextUIProvider } from "@nextui-org/system";
 import { useRouter } from "next/navigation";
@@ -11,12 +17,16 @@ export interface ProvidersProps {
   themeProps?: ThemeProviderProps;
 }
 
+const queryClient = new QueryClient();
+
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
 
   return (
     <NextUIProvider navigate={router.push}>
-      <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+      <QueryClientProvider client={queryClient}>
+        <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+      </QueryClientProvider>
     </NextUIProvider>
   );
 }

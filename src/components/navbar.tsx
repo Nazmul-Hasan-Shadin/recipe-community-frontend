@@ -24,6 +24,7 @@ import {
   HeartFilledIcon,
   SearchIcon,
   Logo,
+  PlusIcon,
 } from "@/src/components/icons";
 import { Avatar } from "@nextui-org/avatar";
 import { Input } from "@nextui-org/input";
@@ -92,10 +93,20 @@ export const Navbar = () => {
         <NavbarItem>
           <NextLink href={"/my-recipe"}>My Recipe</NextLink>
         </NavbarItem>
+
+        <Button endContent={<PlusIcon />} href="/">
+          Create
+        </Button>
+
+        <Link href="/login">Login</Link>
+
+        {/* user image */}
         <NavbarItem className="hidden md:flex">
           <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
         </NavbarItem>
       </NavbarContent>
+
+      {/* ================dark them and menuvar for small device */}
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         <Link isExternal aria-label="Github" href={siteConfig.links.github}>
