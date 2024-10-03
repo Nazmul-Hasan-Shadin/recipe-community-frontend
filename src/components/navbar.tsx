@@ -1,3 +1,4 @@
+"use client";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -28,8 +29,14 @@ import {
 } from "@/src/components/icons";
 import { Avatar } from "@nextui-org/avatar";
 import { Input } from "@nextui-org/input";
+import Register from "./register/Register";
+import { useContext } from "react";
+import { useUser, userContext } from "../context/user.provider";
 
 export const Navbar = () => {
+  const user = useUser();
+  console.log(user, "iam user from navbar");
+
   const searchInput = (
     <Input
       aria-label="Search"
@@ -98,7 +105,8 @@ export const Navbar = () => {
           Create
         </Button>
 
-        <Link href="/login">Login</Link>
+        <Register />
+        {/* <Link href="/login">Login</Link> */}
 
         {/* user image */}
         <NavbarItem className="hidden md:flex">

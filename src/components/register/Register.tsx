@@ -7,20 +7,22 @@ import { FcGoogle } from "react-icons/fc";
 import React from "react";
 import RcModal from "@/src/components/ui/modal/RcModal";
 import { Divider, Link } from "@nextui-org/react";
-import { useLoginUser } from "@/src/hooks/auth.hooks";
+import { useRegisterUser } from "@/src/hooks/auth.hooks";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 
-const LoginPage = () => {
-  const { mutate: handleLoginUser } = useLoginUser();
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+const Register = () => {
+  const { mutate: handleCreateUser, data: userData } = useRegisterUser();
+  const handleRegister: SubmitHandler<FieldValues> = (data) => {
     console.log("hi", data);
-    handleLoginUser(data);
+    handleCreateUser(data);
   };
 
+  console.log(userData, "userdata");
+
   return (
-    <RcModal heading="Login">
+    <RcModal heading="Register">
       <div className=" z-20  px-5">
-        <h2 className="font-bold text-xl text-start">Login</h2>
+        <h2 className="font-bold text-xl text-start">Register</h2>
         <p className="text-sm text-start">
           By continuing, you agree to our{" "}
           <Link underline="active" href={"#"}>
@@ -30,7 +32,7 @@ const LoginPage = () => {
           <Link href={"#"}>Privacy Policy</Link>.
         </p>
         <div className="">
-          <RcForm onSubmit={onSubmit}>
+          <RcForm onSubmit={handleRegister}>
             <div className="py-3 space-y-2">
               <Button className="w-full" startContent={<FcGoogle />}>
                 {" "}
@@ -43,7 +45,9 @@ const LoginPage = () => {
             </div>
 
             <Divider />
-
+            <div className="py-3">
+              <RCInput label={"Name"} name={"username"} type={"text"} />
+            </div>
             <div className="py-3">
               <RCInput label={"Email"} name={"email"} type={"text"} />
             </div>
@@ -57,8 +61,13 @@ const LoginPage = () => {
                 style={{ backgroundColor: "#FF4500" }}
                 className="w-full text-white "
               >
-                Login
+                Register
               </Button>
+            </div>
+            <div className="py-3 flex-end">
+              <h5 className="text-end">
+                Already have account ? <Link href={"/login"}> Login</Link>{" "}
+              </h5>
             </div>
           </RcForm>
         </div>
@@ -67,4 +76,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Register;

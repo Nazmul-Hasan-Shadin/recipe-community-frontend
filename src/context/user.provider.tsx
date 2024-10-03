@@ -1,19 +1,55 @@
-import React, { createContext, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import React, {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { getCurrentUser } from "../services/AuthServices";
+import { Iuser } from "@/types";
 
-const userContext=createContext(undefined)
-const UserProvider = () => {
-    const [loading,setLoading]=useState<boolean>(true)
+interface IUserProviderValues {
+  user: Iuser | undefined;
+  isLoading: boolean;
+  setUser: (user: Iuser | undefined) => void;
+  setisLoading: Dispatch<SetStateAction<boolean>>;
+}
 
- const [user,setUser]=useState(null)
+export const userContext = createContext<IUserProviderValues | undefined>(
+  undefined
+);
+const UserProvider = ({ children }) => {
+  const [isLoading, setisLoading] = useState<boolean>(true);
 
-   
-  const handleUser=()=> {
-     const user=;
-     setUser(user)
+  const [user, setUser] = useState<Iuser | undefined>(undefined);
+  console.log(user, "iam usr");
+
+  const handleUser = async () => {
+    const getUser = await getCurrentUser();
+
+    setUser(getUser);
+    setisLoading(false);
+  };
+
+  useEffect(() => {
+    handleUser();
+  }, []);
+
+  return (
+    <userContext.Provider value={{ user, isLoading, setisLoading, setUser }}>
+      {children}
+    </userContext.Provider>
+  );
+};
+
+export const useUser = () => {
+  const context = useContext(userContext);
+  if (context === undefined) {
+    throw new Error("User must be used within the userProvider Context");
   }
-
-  return <userContext.Provider value={}>
-  </userContext.Provider>
+  return context;
 };
 
 export default UserProvider;
