@@ -35,7 +35,6 @@ import { useUser, userContext } from "../context/user.provider";
 
 export const Navbar = () => {
   const user = useUser();
-  console.log(user, "iam user from navbar");
 
   const searchInput = (
     <Input

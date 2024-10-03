@@ -24,7 +24,6 @@ const UserProvider = ({ children }) => {
   const [isLoading, setisLoading] = useState<boolean>(true);
 
   const [user, setUser] = useState<Iuser | undefined>(undefined);
-  console.log(user, "iam usr");
 
   const handleUser = async () => {
     const getUser = await getCurrentUser();
