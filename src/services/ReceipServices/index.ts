@@ -1,3 +1,4 @@
+"use server";
 import axiosInstance from "@/src/lib/axiosInstance";
 
 export const getAllRecipe = async () => {
@@ -7,4 +8,15 @@ export const getAllRecipe = async () => {
   console.log(res.data.data.data);
 
   console.log(res, "iamr res");
+};
+
+export const increaseUpvote = async (id: string, type: string) => {
+  console.log("insdinde increaseupvote", id);
+
+  const response = await axiosInstance.post(`user/${id}/upvote`, {
+    recipeId: id,
+    type: type,
+  });
+  console.log(response.data, "hfffffffffffffffffffffffffi");
+  return response;
 };

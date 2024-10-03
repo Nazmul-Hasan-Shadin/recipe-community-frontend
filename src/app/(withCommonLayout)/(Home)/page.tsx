@@ -1,3 +1,4 @@
+"use server";
 import Card from "@/src/components/ui/card";
 import { useGetAllRecipe } from "@/src/hooks/recipes.hooks";
 import { Recipe } from "@/types";
@@ -12,7 +13,7 @@ export default async function Home() {
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       {res?.data?.map((recipe: Recipe) => (
-        <Card recipe={recipe} />
+        <Card key={recipe._id} recipe={recipe} />
       ))}
       <h2>hi</h2>
     </section>
