@@ -28,7 +28,8 @@ export interface Recipe {
   cookingTime: number; // Cooking time in minutes
   image: string; // URL to the recipe image
   author: string; // Author's user ID
-  upvotes: string[]; // Array of user IDs who upvoted
+  upvotes: string[];
+  profilePicture: string;
   downvotes: string[]; // Array of user IDs who downvoted
   isPremium: boolean; // Whether the recipe is premium
   isDeleted: boolean; // Whether the recipe is deleted
@@ -36,4 +37,21 @@ export interface Recipe {
   createdAt: string; // Date when the recipe was created
   updatedAt: string; // Date when the recipe was last updated
   __v: number; // Version key (used by MongoDB)
+}
+
+export interface TUser {
+  id: string;
+  username: string;
+  email: string;
+  password: string;
+  profilePicture?: string;
+  bio?: string;
+  isPremium: boolean;
+  premiumExpiryDate?: Date;
+  followers: [];
+  following: [];
+  role: "admin" | "user";
+  status: "block" | "active";
+  registeredAt: Date;
+  passwordChangeAt: Date;
 }

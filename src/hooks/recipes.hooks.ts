@@ -1,10 +1,28 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAllRecipe, increaseUpvote } from "../services/ReceipServices";
+import {
+  createRecipePost,
+  getAllRecipe,
+  increaseUpvote,
+} from "../services/ReceipServices";
 
 export const useGetAllRecipe = () => {
   return useQuery({
     queryKey: ["allrecipe"],
     queryFn: async (userData) => await getAllRecipe(),
+  });
+};
+
+export const useCreateRecipe = () => {
+  return useMutation({
+    mutationKey: ["createRecipe"],
+    mutationFn: async (recipeInfo) => {
+      console.log(recipeInfo, "inside hook");
+
+      return await createRecipePost(recipeInfo);
+    },
+    onSuccess: () => {
+      console.log("succes createrecip");
+    },
   });
 };
 

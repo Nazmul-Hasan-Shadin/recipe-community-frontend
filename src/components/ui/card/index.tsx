@@ -1,4 +1,5 @@
 "use client";
+import { useGetSingleUser } from "@/src/hooks/auth.user";
 import { useIncreasUpvote } from "@/src/hooks/recipes.hooks";
 import { Recipe } from "@/types";
 import { Avatar } from "@nextui-org/avatar";
@@ -9,10 +10,19 @@ import { AiFillLike, AiOutlineShareAlt, AiFillMessage } from "react-icons/ai";
 
 const Card = ({ recipe }: { recipe: Recipe }) => {
   const { mutate } = useIncreasUpvote();
-  const { instructions, image, upvotes, downvotes, author, name, _id } = recipe;
+  const {
+    instructions,
+    image,
+    upvotes,
+    downvotes,
+    author,
+    name,
+    _id,
+    profilePicture,
+  } = recipe;
 
-  const [likeCount, setLikeCount] = useState(upvotes.length || 0);
-  const [dislikeCount, setDislikeCount] = useState(downvotes.length || 0);
+  const [likeCount, setLikeCount] = useState(upvotes?.length || 0);
+  const [dislikeCount, setDislikeCount] = useState(downvotes?.length || 0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isDisliked, setIsDisliked] = useState<boolean>(false);
 
@@ -59,14 +69,12 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
               width={30}
               height={30}
               className="rounded-full"
-              src={image}
+              src={author.profilePicture}
             />
           ) : (
             <Avatar name="user" />
           )}
-          <p className="text-lg font-bold text-gray-800">
-            {name ? name : "shaidn"}
-          </p>
+          <p className="text-lg font-bold text-gray-800">{name}</p>
           <p className="text-sm text-gray-500">17 hr. ago</p>
         </div>
         <div className="flex items-center gap-2">
@@ -82,6 +90,10 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
         <p className="text-sm text-gray-800 mb-2">
           {instructions ? instructions : ""}
         </p>
+      </div>
+
+      <div>
+        <Image src={image[0]} height={180} width={400} alt="recipe image" />
       </div>
 
       {/* Footer */}

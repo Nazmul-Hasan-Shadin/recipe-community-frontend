@@ -13,8 +13,6 @@ export const registerUser = async (userData: FieldValues) => {
 
   // cookies().set('accessToken',res.data.accessToken)
   console.log(res);
-
-  console.log(res, "iamr res");
 };
 
 export const loginUser = async (userData: FieldValues) => {
@@ -23,9 +21,6 @@ export const loginUser = async (userData: FieldValues) => {
   const res = await axiosInstance.post("user/login", userData);
 
   cookies().set("accessToken", res.data.data.accessToken);
-  console.log(res);
-
-  console.log(res, "iamr res");
 };
 
 export const getCurrentUser = async () => {
@@ -42,8 +37,6 @@ export const getCurrentUser = async () => {
       userId: decodedToken.userId,
     };
   }
-
-  console.log(decodedToken);
 
   return decodedToken;
 };
