@@ -2,13 +2,19 @@
 import axiosInstance from "@/src/lib/axiosInstance";
 import { Recipe } from "@/types";
 
-export const getAllRecipe = async () => {
-  const res = await axiosInstance.get("recipe");
+export const getAllRecipe = async (searchTerm: string, page, limit) => {
+  console.log(searchTerm, page, limit);
+  const res = await axiosInstance.get("recipe", {
+    params: {
+      searchTerm: searchTerm,
+      page: page,
+      limit: limit,
+    },
+  });
 
-  // cookies().set('accessToken',res.data.accessToken)
-  console.log(res.data.data.data);
+  console.log(res.data);
 
-  console.log(res, "iamr res");
+  return res;
 };
 
 export const createRecipePost = async (recipieInfo: FormData) => {

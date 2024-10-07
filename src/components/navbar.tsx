@@ -1,4 +1,5 @@
 "use client";
+import { useState, useRef, useContext } from "react";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -11,33 +12,55 @@ import {
 import { Button } from "@nextui-org/button";
 import { Kbd } from "@nextui-org/kbd";
 import { Link } from "@nextui-org/link";
-
-import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
-import clsx from "clsx";
-
-import { siteConfig } from "@/config/site";
-import { ThemeSwitch } from "@/src/components/theme-switch";
-import {
-  TwitterIcon,
-  GithubIcon,
-  DiscordIcon,
-  SearchIcon,
-  Logo,
-  PlusIcon,
-} from "@/src/components/icons";
-import { Avatar } from "@nextui-org/avatar";
-import { Input } from "@nextui-org/input";
-import Register from "./register/Register";
-import { useUser } from "../context/user.provider";
 import Image from "next/image";
+import { Input } from "@nextui-org/input";
+import axios from "axios";
+import { GithubIcon, PlusIcon, SearchIcon } from "@/src/components/icons";
+import { siteConfig } from "@/config/site";
+import Register from "./register/Register";
+import { useUser, userContext } from "../context/user.provider";
 import logo from "@/src/assets/logo.png";
+import { Avatar } from "@nextui-org/avatar";
+import { ThemeSwitch } from "./theme-switch";
 
 export const Navbar = () => {
+  const { setSearchResults } = useContext(userContext);
+  const [searchTerms, setSearchTerms] = useState("");
+  const debounceTimeout = useRef(null); // Ref to hold the debounce timer
+
   const user = useUser();
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+
+    // Clear the existing timer if a new keystroke happens before the timeout
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    // Set a new timer that will trigger the API call after a short delay
+    debounceTimeout.current = setTimeout(async () => {
+      setSearchTerms(value);
+      if (value.trim() !== "") {
+        try {
+          const response = await axios.get(
+            `http://localhost:5001/api/v1/recipe?searchTerm=${value}`
+          );
+          console.log(response.data.data, "Updated searchResults in context");
+          setSearchResults(response.data.data);
+
+          setSearchResults(response.data.data);
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+    }, 300); // 300ms delay for debouncing
+  };
 
   const searchInput = (
     <Input
+      onChange={handleSearch}
       aria-label="Search"
       classNames={{
         inputWrapper: "bg-default-100",
@@ -58,14 +81,13 @@ export const Navbar = () => {
   );
 
   return (
-    <NextUINavbar className="fixed " maxWidth="xl" position="sticky" isBordered>
+    <NextUINavbar className="fixed" maxWidth="xl" position="sticky" isBordered>
       {/* Left Side (Brand and Links) */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
-            {/* <Logo /> */}
             <Image width={90} height={40} alt="logo" src={logo} />
-            <p className="font-bold  -ml-4 text-red-600">Cooking Community</p>
+            <p className="font-bold -ml-4 text-red-600">Cooking Community</p>
           </NextLink>
         </NavbarBrand>
       </NavbarContent>
@@ -82,9 +104,11 @@ export const Navbar = () => {
         <NavbarItem>
           <NextLink href="/my-profile">My Recipe</NextLink>
         </NavbarItem>
-        <Button endContent={<PlusIcon />} href="/">
-          Create
-        </Button>
+        <NavbarItem>
+          <NextLink href="/create-post">
+            <Button endContent={<PlusIcon />}>Create</Button>
+          </NextLink>
+        </NavbarItem>
         <Register />
         <NavbarItem className="hidden md:flex">
           <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />

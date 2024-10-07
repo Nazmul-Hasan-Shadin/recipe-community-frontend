@@ -8,10 +8,12 @@ import {
   increaseUpvote,
 } from "../services/ReceipServices";
 
-export const useGetAllRecipe = () => {
+export const useGetAllRecipe = (searchTerm, page, limit) => {
+  console.log(searchTerm, "inside hook");
+
   return useQuery({
     queryKey: ["allrecipe"],
-    queryFn: async (userData) => await getAllRecipe(),
+    queryFn: async () => await getAllRecipe(searchTerm, page, limit),
   });
 };
 

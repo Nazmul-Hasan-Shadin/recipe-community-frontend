@@ -10,7 +10,7 @@ import { AiFillLike, AiFillDislike, AiFillMessage } from "react-icons/ai";
 
 const Card = ({ recipe }: { recipe: Recipe }) => {
   const { mutate } = useIncreasUpvote();
-  // const { mutate: handleFollowUser } = useFollowUser();
+  const { mutate: handleFollowUser } = useFollowUser();
   const {
     instructions,
     image,
@@ -23,18 +23,18 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
   } = recipe;
 
   // Get the follow status for the author
-  // const { data: followedStatus } = useGetFollowStatus(author._id);
-  // console.log(followedStatus, "Follow status");
+  const { data: followedStatus } = useGetFollowStatus(author._id);
+  console.log(followedStatus, "Follow status");
 
   // State to manage follow status
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
   // Update the isFollowing state when followedStatus changes
-  // useEffect(() => {
-  //   if (followedStatus?.isFollowing !== undefined) {
-  //     setIsFollowing(followedStatus.isFollowing);
-  //   }
-  // }, [followedStatus]);
+  useEffect(() => {
+    if (followedStatus?.isFollowing !== undefined) {
+      setIsFollowing(followedStatus.isFollowing);
+    }
+  }, [followedStatus]);
 
   const [likeCount, setLikeCount] = useState(upvotes?.length || 0);
   const [dislikeCount, setDislikeCount] = useState(downvotes?.length || 0);
