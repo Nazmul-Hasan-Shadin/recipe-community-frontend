@@ -22,7 +22,6 @@ import {
   TwitterIcon,
   GithubIcon,
   DiscordIcon,
-  HeartFilledIcon,
   SearchIcon,
   Logo,
   PlusIcon,
@@ -30,8 +29,9 @@ import {
 import { Avatar } from "@nextui-org/avatar";
 import { Input } from "@nextui-org/input";
 import Register from "./register/Register";
-import { useContext } from "react";
-import { useUser, userContext } from "../context/user.provider";
+import { useUser } from "../context/user.provider";
+import Image from "next/image";
+import logo from "@/src/assets/logo.png";
 
 export const Navbar = () => {
   const user = useUser();
@@ -58,63 +58,40 @@ export const Navbar = () => {
   );
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky" isBordered>
+    <NextUINavbar className="fixed " maxWidth="xl" position="sticky" isBordered>
+      {/* Left Side (Brand and Links) */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo />
-            <p className="font-bold text-inherit">ACME</p>
+            {/* <Logo /> */}
+            <Image width={90} height={40} alt="logo" src={logo} />
+            <p className="font-bold  -ml-4 text-red-600">Cooking Community</p>
           </NextLink>
         </NavbarBrand>
-        {/* <ul className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
-              <NextLink
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
-                )}
-                color="foreground"
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            </NavbarItem>
-          ))}
-        </ul> */}
       </NavbarContent>
 
       <NavbarContent>
-        <NavbarItem className="hidden flex-1   lg:flex">
-          {searchInput}
-        </NavbarItem>
+        <NavbarItem className="hidden lg:flex flex-1">{searchInput}</NavbarItem>
       </NavbarContent>
 
-      {/* =================right side content======================= */}
-
+      {/* Right Side (User & Buttons for Large Devices) */}
       <NavbarContent
         className="hidden sm:flex basis-1/5 sm:basis-full"
         justify="end"
       >
         <NavbarItem>
-          <NextLink href={"/my-recipe"}>My Recipe</NextLink>
+          <NextLink href="/my-profile">My Recipe</NextLink>
         </NavbarItem>
-
         <Button endContent={<PlusIcon />} href="/">
           Create
         </Button>
-
         <Register />
-        {/* <Link href="/login">Login</Link> */}
-
-        {/* user image */}
         <NavbarItem className="hidden md:flex">
           <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
         </NavbarItem>
       </NavbarContent>
 
-      {/* ================dark them and menuvar for small device */}
-
+      {/* Dark Mode and Toggle for Small Devices */}
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         <Link isExternal aria-label="Github" href={siteConfig.links.github}>
           <GithubIcon className="text-default-500" />
@@ -123,6 +100,7 @@ export const Navbar = () => {
         <NavbarMenuToggle />
       </NavbarContent>
 
+      {/* Sidebar Content for Small Devices */}
       <NavbarMenu>
         {searchInput}
         <div className="mx-4 mt-2 flex flex-col gap-2">
@@ -136,7 +114,7 @@ export const Navbar = () => {
                     ? "danger"
                     : "foreground"
                 }
-                href="#"
+                href={item.href}
                 size="lg"
               >
                 {item.label}

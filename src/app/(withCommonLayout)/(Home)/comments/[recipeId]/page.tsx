@@ -18,7 +18,10 @@ const CommentsPage = async ({ params }) => {
 
   // Fetch the comments for the recipe
   const commentsResponse = await fetch(
-    `http://localhost:5001/api/v1/recipe/${recipeId}/comments`
+    `http://localhost:5001/api/v1/recipe/${recipeId}/comments`,
+    {
+      cache: "no-store",
+    }
   );
   const commentsData = await commentsResponse.json();
 

@@ -39,3 +39,11 @@ export const increaseUpvote = async (id: string, type: string) => {
   console.log(response.data, "hfffffffffffffffffffffffffi");
   return response;
 };
+
+export const getUsersRecipe = async () => {
+  const res = await axiosInstance.get("recipe/my-profile");
+
+  // cookies().set('accessToken',res.data.accessToken)
+  console.log(res.data);
+  return res;
+};

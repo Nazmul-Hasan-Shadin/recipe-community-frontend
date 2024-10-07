@@ -1,7 +1,10 @@
+"use client";
+
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   createRecipePost,
   getAllRecipe,
+  getUsersRecipe,
   increaseUpvote,
 } from "../services/ReceipServices";
 
@@ -22,6 +25,18 @@ export const useCreateRecipe = () => {
     },
     onSuccess: () => {
       console.log("succes createrecip");
+    },
+  });
+};
+
+export const useGetUsersRecipePost = () => {
+  return useQuery({
+    queryKey: ["usersRecipe"],
+    queryFn: async () => {
+      console.log("Fetching user's recipe");
+      const data = await getUsersRecipe();
+      console.log(data, "Fetched data");
+      return data;
     },
   });
 };
