@@ -22,11 +22,21 @@ export const useMakeComment = () => {
   });
 };
 
-export const useGetAllComment = () => {
-  return useQuery<any, Error, FieldValues>({
-    queryKey: ["getallcomment"],
-    queryFn: async (recipeId) => {
-      return await getAllComment(recipeId);
+// export const useGetAllComment = () => {
+//   return useQuery<any, Error, FieldValues>({
+//     queryKey: ["getallcomment"],
+//     queryFn: async (recipeId) => {
+//       return await getAllComment(recipeId);
+//     },
+//   });
+// };
+
+export const useGetAllComment = (recipeId: string) => {
+  return useQuery<any, Error>({
+    queryKey: ["getallcomment", recipeId],
+    queryFn: async ({ queryKey }) => {
+      const [, id] = queryKey; // Extracting recipeId from queryKey
+      return await getAllComment(id as string);
     },
   });
 };

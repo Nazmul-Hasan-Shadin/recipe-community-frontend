@@ -1,39 +1,53 @@
 "use client";
 
-import React, { ChangeEvent, useState } from "react";
-import dynamic from "next/dynamic";
-import "react-markdown-editor-lite/lib/index.css";
-import ReactMarkdown from "react-markdown";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import Image from "next/image";
-import { useCreateRecipe } from "@/src/hooks/recipes.hooks";
+import { useParams } from "next/navigation";
+import { useUpdateRecipe } from "@/src/hooks/recipes.hooks";
 
-// Dynamically load the MdEditor component
-const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
-  ssr: false,
-}) as React.FC<any>;
+const UpdateRecipeForm = () => {
+  const { recipeId } = useParams() as { recipeId: string }; // Explicitly cast recipeId as string
+  const { mutate: handleUpdateRecipePost } = useUpdateRecipe();
 
-const CreatePost = () => {
-  const { mutate: handleCreateRecipe } = useCreateRecipe();
-  const [title, setTitle] = useState<string>("");
-  const [ingredients, setIngredients] = useState<
-    { name: string; quantity: string }[]
-  >([{ name: "", quantity: "" }]);
-  const [cookingTime, setCookingTime] = useState<string>("");
-  const [body, setBody] = useState<string>("");
+  const [title, setTitle] = useState("");
+  const [ingredients, setIngredients] = useState([{ name: "", quantity: "" }]);
+  const [cookingTime, setCookingTime] = useState("");
+  const [instructions, setInstructions] = useState("");
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
 
-  const handleEditorChange = ({ text }: { text: string }) => {
-    setBody(text);
-  };
+  // Fetch recipe data when the component mounts
+  useEffect(() => {
+    const fetchRecipeData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/v1/recipe/${recipeId}`
+        );
+        const data = await response.json();
+
+        setTitle(data.data.title);
+        setIngredients(data.data.ingredients);
+        setCookingTime(data.data.cookingTime);
+        setInstructions(data.data.instructions);
+        setImagePreviewUrls(data.data.images || []);
+      } catch (error) {
+        console.error("Failed to fetch recipe data:", error);
+      }
+    };
+
+    fetchRecipeData();
+  }, [recipeId]);
+
+  // Define the fields for ingredients
+  type IngredientField = "name" | "quantity";
 
   const handleIngredientChange = (
     index: number,
-    field: "name" | "quantity",
+    field: IngredientField, // Use the new type here
     value: string
   ) => {
     const updatedIngredients = [...ingredients];
-    updatedIngredients[index][field] = value;
+    updatedIngredients[index][field] = value; // This now works as expected
     setIngredients(updatedIngredients);
   };
 
@@ -42,44 +56,51 @@ const CreatePost = () => {
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files![0];
-    setImageFiles((prev) => [...prev, file]);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviewUrls((prev) => [...prev, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
+    if (e.target.files) {
+      const fileArray = Array.from(e.target.files);
+      setImageFiles((prev) => [...prev, ...fileArray]);
+
+      fileArray.forEach((file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreviewUrls((prev) => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    try {
-      const formData = new FormData();
 
-      imageFiles.forEach((file) => {
-        formData.append(`image`, file);
-      });
+    // Create a FormData object to handle file uploads and other data
+    const formData = new FormData();
 
-      const data = {
-        title,
-        ingredients,
-        instructions: body,
-        cookingTime: parseInt(cookingTime),
-      };
-      formData.append("data", JSON.stringify(data));
+    // Prepare the recipe data object
+    const recipeData = {
+      title,
+      ingredients,
+      cookingTime,
+      instructions,
+      // Example value, adjust as needed
+    };
 
-      handleCreateRecipe(formData);
-    } catch (error) {
-      console.log(error);
-    }
+    // Append the recipe data as a JSON string to the FormData object
+    formData.append("data", JSON.stringify(recipeData));
+
+    // Add the image files to the FormData object
+    imageFiles.forEach((file) => {
+      formData.append("image", file);
+    });
+
+    // Use the mutation function to send the request
+    handleUpdateRecipePost({ id: recipeId, recipeInfo: formData });
   };
 
   return (
     <div className="container mx-auto mt-10 p-6">
       <div className="mb-4">
-        <h1 className="text-2xl font-bold">Create Recipe</h1>
+        <h1 className="text-2xl font-bold">Update Recipe</h1>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="border rounded-lg p-4 shadow-sm bg-white">
@@ -94,7 +115,6 @@ const CreatePost = () => {
               onChange={(e) => setTitle(e.target.value)}
               required
             />
-            <div className="text-sm text-gray-500">{title.length}/300</div>
           </div>
 
           {/* Ingredients Input */}
@@ -145,15 +165,15 @@ const CreatePost = () => {
             />
           </div>
 
-          {/* Body Input */}
+          {/* Instructions Textarea */}
           <div className="mb-4">
-            <MdEditor
-              value={body}
-              style={{ height: "300px" }}
-              renderHTML={(text: string) => (
-                <ReactMarkdown>{text}</ReactMarkdown>
-              )}
-              onChange={handleEditorChange}
+            <textarea
+              placeholder="Instructions"
+              className="w-full p-3 border rounded-lg"
+              rows={8}
+              value={instructions}
+              onChange={(e) => setInstructions(e.target.value)}
+              required
             />
           </div>
 
@@ -181,16 +201,13 @@ const CreatePost = () => {
             </div>
           </div>
 
-          {/* Save Draft and Post Buttons */}
+          {/* Save Changes Button */}
           <div className="flex justify-end gap-4 mt-4">
-            <button type="button" className="py-2 px-6 bg-gray-300 rounded-md">
-              Save Draft
-            </button>
             <button
               type="submit"
-              className="py-2 px-6 bg-blue-500 text-white rounded-md"
+              className="py-2 px-6 bg-blue-500 text-black rounded-md"
             >
-              Post
+              Update Recipe
             </button>
           </div>
         </div>
@@ -199,4 +216,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default UpdateRecipeForm;

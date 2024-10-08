@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Main Content */}
           <section
-            className="flex-grow bg-white shadow-md rounded-lg p-6 mt-12"
+            className="flex-grow  shadow-md rounded-lg p-6 mt-12"
             style={{ marginLeft: "17rem", marginTop: "6rem" }} // Adjust the margin to account for the fixed sidebar width
           >
             {children}

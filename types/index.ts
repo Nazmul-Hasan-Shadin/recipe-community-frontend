@@ -18,16 +18,21 @@ export interface TRating {
   user: string; // User ID as string
   rating: number; // Rating between 1 and 5
 }
+type Author = {
+  _id: string;
+  name: string;
+  profilePicture?: string;
+};
 
 export interface Recipe {
   _id: string;
-  name: string;
+  name?: string;
   title: string; // Recipe title
   ingredients: TIngredient[]; // Array of ingredients
   instructions: string; // Cooking instructions
   cookingTime: number; // Cooking time in minutes
   image: string; // URL to the recipe image
-  author: string; // Author's user ID
+  author: Author; // Author's user ID
   upvotes: string[];
   profilePicture: string;
   downvotes: string[]; // Array of user IDs who downvoted

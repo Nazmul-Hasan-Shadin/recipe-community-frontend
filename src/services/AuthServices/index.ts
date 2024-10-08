@@ -1,18 +1,25 @@
 "use server";
 import axiosInstance from "@/src/lib/axiosInstance";
+import { Iuser } from "@/types";
 import { user } from "@nextui-org/theme";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { JwtPayload, jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 
 import { FieldValues } from "react-hook-form";
+interface DecodedToken extends JwtPayload {
+  username: string;
+  role: string;
+  email: string;
+  userId: string;
+}
 
 export const registerUser = async (userData: FieldValues) => {
   console.log(userData, "register dsatar");
 
   try {
     const res = await axios.post(
-      "http://localhost:5001/api/v1/user/register",
+      "https://recipe-sharing-community.vercel.app/api/v1/user/register",
       userData,
       {
         headers: {
@@ -39,20 +46,23 @@ export const loginUser = async (userData: FieldValues) => {
   cookies().set("accessToken", res.data.data.accessToken);
 };
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (): Promise<Iuser | undefined> => {
   const accessToken = cookies().get("accessToken")?.value;
 
-  let decodedToken;
   if (accessToken) {
-    decodedToken = jwtDecode(accessToken);
+    try {
+      const decodedToken = jwtDecode<DecodedToken>(accessToken);
 
-    return {
-      name: decodedToken.username,
-      role: decodedToken.role,
-      email: decodedToken.email,
-      userId: decodedToken.userId,
-    };
+      return {
+        name: decodedToken.username,
+        role: decodedToken.role,
+        email: decodedToken.email,
+        userId: decodedToken.userId,
+      };
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
   }
 
-  return decodedToken;
+  return undefined; // Return undefined if the token is invalid or missing
 };

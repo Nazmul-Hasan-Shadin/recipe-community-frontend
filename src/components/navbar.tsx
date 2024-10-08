@@ -1,5 +1,6 @@
 "use client";
-import { useState, useRef, useContext } from "react";
+
+import { useState, useRef } from "react";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -19,19 +20,18 @@ import axios from "axios";
 import { GithubIcon, PlusIcon, SearchIcon } from "@/src/components/icons";
 import { siteConfig } from "@/config/site";
 import Register from "./register/Register";
-import { useUser, userContext } from "../context/user.provider";
+import { useUser } from "../context/user.provider"; // Use the custom hook
 import logo from "@/src/assets/logo.png";
 import { Avatar } from "@nextui-org/avatar";
 import { ThemeSwitch } from "./theme-switch";
 
 export const Navbar = () => {
-  const { setSearchResults } = useContext(userContext);
+  const { setSearchResults } = useUser();
   const [searchTerms, setSearchTerms] = useState("");
-  const debounceTimeout = useRef(null); // Ref to hold the debounce timer
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null); // Explicitly type the ref
 
-  const user = useUser();
-
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Explicitly type the event
     const value = e.target.value;
 
     // Clear the existing timer if a new keystroke happens before the timeout
@@ -45,13 +45,11 @@ export const Navbar = () => {
       if (value.trim() !== "") {
         try {
           const response = await axios.get(
-            `http://localhost:5001/api/v1/recipe?searchTerm=${value}`
+            `https://recipe-sharing-community.vercel.app/api/v1/recipe?searchTerm=${value}`
           );
           console.log(response.data.data, "Updated searchResults in context");
           setSearchResults(response.data.data);
-
-          setSearchResults(response.data.data);
-        } catch (error) {
+        } catch (error: any) {
           console.log(error.message);
         }
       }

@@ -11,15 +11,15 @@ const UserComments = ({
 }: {
   comment: {
     content: string;
-    userId: TUser;
-    recipeid: string;
-    profilePicture: {};
+    userId?: TUser;
+    recipeid?: string;
+    profilePicture?: {}; // Allow undefined or an empty object for profilePicture
     _id: string;
   };
 }) => {
   console.log(comment, "iam comment");
 
-  const { data: allComments } = useGetAllComment();
+  const { data: allComments } = useGetAllComment(comment.recipeid as string);
   console.log(allComments, "iam all comments");
 
   return (
@@ -35,7 +35,7 @@ const UserComments = ({
           height={40}
         />
         <div className="bg-gray-50 p-2">
-          <p className=""> {comment.userId.username} </p>
+          <p className=""> {comment?.userId!.username} </p>
           <p className="text-gray-600 text-sm">{comment?.content}</p>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { useMakeComment } from "@/src/hooks/comments.hooks";
 import { useState } from "react";
 
 // AddComment component for user input
-export const AddComment = ({ recipeId }) => {
+export const AddComment = ({ recipeId }: { recipeId: string }) => {
   const { mutate: handleAddComment } = useMakeComment();
   const [comment, setComment] = useState("");
 

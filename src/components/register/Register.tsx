@@ -22,29 +22,28 @@ const Register = () => {
 
     console.log(registerInfo.profileImage[0], "0");
     console.log(registerInfo.username);
-
     console.log(registerInfo.email);
 
     const data = {
       username: registerInfo.username,
       email: registerInfo.email,
-
       password: registerInfo.password,
     };
 
     formData.append("profilePicture", registerInfo.profileImage[0]);
-
     formData.append("data", JSON.stringify(data));
 
     await handleCreateUser(formData);
   };
 
-  // Image preview handler (optional)
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    console.log(file, "ifil");
+  // Image preview handler (with explicit event type)
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file, "file");
 
-    setImagePreview(URL.createObjectURL(file));
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
   return (

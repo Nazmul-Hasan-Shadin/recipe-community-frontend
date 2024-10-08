@@ -4,17 +4,17 @@ import SideBarOptions from "./sideBarOptions";
 import { sideBarLinks } from "./constants";
 
 const Sidebar = () => {
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   // Sample data for the accordion
   const customFeeds = [{ title: "Community", content: "Create a custom feed" }];
 
-  const toggleAccordion = (index) => {
+  const toggleAccordion = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <div className="w-[270px] hidden md:block  fixed top-12 h-[100vh] bg-white border  rounded-lg shadow-lg p-4 left-0">
+    <div className="w-[270px] hidden md:block fixed top-12 h-[100vh] bg-white border rounded-lg shadow-lg p-4 left-0">
       {/* Sidebar Links */}
       <ul className="px-3">
         <SideBarOptions links={sideBarLinks} />

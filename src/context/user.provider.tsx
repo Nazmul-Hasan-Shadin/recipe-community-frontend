@@ -8,31 +8,33 @@ import React, {
   useState,
 } from "react";
 import { getCurrentUser } from "../services/AuthServices";
-import { Iuser } from "@/types";
+import { Iuser, Recipe } from "@/types"; // Make sure Recipe is imported if it's defined in your types
 import axios from "axios";
 
 interface IUserProviderValues {
   user: Iuser | undefined;
   isLoading: boolean;
   setUser: (user: Iuser | undefined) => void;
-  setisLoading: Dispatch<SetStateAction<boolean>>;
-  searchResults: any[];
-  setSearchResults: Dispatch<SetStateAction<any[]>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  searchResults: Recipe[]; // Change 'any[]' to 'Recipe[]' or your desired type
+  setSearchResults: Dispatch<SetStateAction<Recipe[]>>; // Same here
 }
 
 export const userContext = createContext<IUserProviderValues | undefined>(
   undefined
 );
 
-const UserProvider = ({ children }) => {
-  const [isLoading, setisLoading] = useState<boolean>(true);
+const UserProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useState<Iuser | undefined>(undefined);
-  const [searchResults, setSearchResults] = useState<any[]>([]); // New state for search results
+  const [searchResults, setSearchResults] = useState<Recipe[]>([]); // Using specific type for search results
 
   const handleUser = async () => {
     const getUser = await getCurrentUser();
     setUser(getUser);
-    setisLoading(false);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -44,7 +46,7 @@ const UserProvider = ({ children }) => {
       value={{
         user,
         isLoading,
-        setisLoading,
+        setIsLoading,
         setUser,
         searchResults,
         setSearchResults,

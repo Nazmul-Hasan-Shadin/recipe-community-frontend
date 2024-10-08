@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { AiFillLike, AiFillDislike, AiFillMessage } from "react-icons/ai";
+import { FiMoreHorizontal } from "react-icons/fi";
 
 const Card = ({ recipe }: { recipe: Recipe }) => {
   const { mutate } = useIncreasUpvote();
@@ -18,18 +19,24 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
     downvotes,
     author,
     name,
+    cookingTime,
+    createdAt,
+    ingredients,
+    isPremium,
+    ratings,
+    isDeleted,
+    title,
+    updatedAt,
+
     _id,
     profilePicture,
   } = recipe;
 
   // Get the follow status for the author
   const { data: followedStatus } = useGetFollowStatus(author._id);
-  console.log(followedStatus, "Follow status");
 
-  // State to manage follow status
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
-  // Update the isFollowing state when followedStatus changes
   useEffect(() => {
     if (followedStatus?.isFollowing !== undefined) {
       setIsFollowing(followedStatus.isFollowing);
@@ -41,6 +48,7 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isDisliked, setIsDisliked] = useState<boolean>(false);
   const [isVoting, setIsVoting] = useState(false);
+  const [showOptions, setShowOptions] = useState(false); // State to toggle options menu
 
   const handleVote = async (voteType: "upvote" | "downvote") => {
     if (isVoting) return;
@@ -94,11 +102,27 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
   // Handler for following/unfollowing users
   const handleFollow = async () => {
     try {
-      // await handleFollowUser(author?._id);
       setIsFollowing((prev) => !prev); // Toggle follow status
     } catch (error) {
       console.error("Error during follow action:", error);
     }
+  };
+
+  // Handler for showing the options menu
+  const toggleOptions = () => {
+    setShowOptions((prev) => !prev);
+  };
+
+  // Handler for delete action
+  const handleDelete = () => {
+    // Add delete logic here
+    console.log(`Delete recipe with ID: ${_id}`);
+  };
+
+  // Handler for update action
+  const handleUpdate = () => {
+    // Add update logic here
+    console.log(`Update recipe with ID: ${_id}`);
   };
 
   return (
@@ -120,25 +144,34 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
           <p className="text-lg font-bold text-gray-800">{name}</p>
           <p className="text-sm text-gray-500">17 hr. ago</p>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            // onClick={handleFollow}
-            className={`${
-              isFollowing ? "bg-gray-500" : "bg-[#d93900]"
-            } text-[11px] text-white px-2 py-1 rounded-md hover:bg-blue-600 transition-all`}
-            // Disable button after following
-          >
-            {isFollowing ? "Followed" : "Follow"} {/* Button text change */}
-          </button>
-          <p>...</p>
+        <div className="relative">
+          <FiMoreHorizontal
+            className="cursor-pointer text-gray-700"
+            size={24}
+            onClick={toggleOptions}
+          />
+          {showOptions && (
+            <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10">
+              <button
+                onClick={handleUpdate}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Edit
+              </button>
+              <button
+                onClick={handleDelete}
+                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+              >
+                Delete
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Body */}
       <div className="p-4">
-        <p className="text-sm text-gray-800 mb-2">
-          {instructions ? instructions : ""}
-        </p>
+        <p className="text-sm text-gray-800 mb-2">{instructions || ""}</p>
         {image && image[0] ? (
           <div className="relative w-full h-[300px]">
             <Image

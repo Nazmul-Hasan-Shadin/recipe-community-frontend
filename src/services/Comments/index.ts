@@ -22,7 +22,7 @@ export const makeComment = async (recipeId: string, content: string) => {
   // cookies().set('accessToken',res.data.accessToken)
 };
 
-export const getAllComment = async (recipeId) => {
+export const getAllComment = async (recipeId: string) => {
   try {
     const res = await axiosInstance.get(`/recipe/${recipeId}/comments`);
 
