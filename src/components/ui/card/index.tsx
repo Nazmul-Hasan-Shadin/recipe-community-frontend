@@ -1,4 +1,5 @@
 "use client";
+import { useUser } from "@/src/context/user.provider";
 import { useFollowUser, useGetFollowStatus } from "@/src/hooks/follow.hooks";
 import { useIncreasUpvote } from "@/src/hooks/recipes.hooks";
 import { Recipe } from "@/types";
@@ -10,6 +11,7 @@ import { AiFillLike, AiFillDislike, AiFillMessage } from "react-icons/ai";
 import { FiMoreHorizontal } from "react-icons/fi";
 
 const Card = ({ recipe }: { recipe: Recipe }) => {
+  const { user } = useUser();
   const { mutate } = useIncreasUpvote();
   const { mutate: handleFollowUser } = useFollowUser();
   const {
@@ -19,17 +21,8 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
     downvotes,
     author,
     name,
-    cookingTime,
     createdAt,
-    ingredients,
-    isPremium,
-    ratings,
-    isDeleted,
-    title,
-    updatedAt,
-
     _id,
-    profilePicture,
   } = recipe;
 
   // Get the follow status for the author
@@ -113,73 +106,48 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
     setShowOptions((prev) => !prev);
   };
 
-  // Handler for delete action
-  const handleDelete = () => {
-    // Add delete logic here
-    console.log(`Delete recipe with ID: ${_id}`);
-  };
-
-  // Handler for update action
-  const handleUpdate = () => {
-    // Add update logic here
-    console.log(`Update recipe with ID: ${_id}`);
-  };
-
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-lg">
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b">
         <div className="flex items-center gap-2">
-          {profilePicture ? (
+          {user?.profilePicture ? (
             <Image
               alt="user profile picture"
-              width={30}
-              height={30}
+              width={40}
+              height={40}
               className="rounded-full"
-              src={profilePicture}
+              src={user.profilePicture}
             />
           ) : (
             <Avatar name="user" />
           )}
-          <p className="text-lg font-bold text-gray-800">{name}</p>
-          <p className="text-sm text-gray-500">17 hr. ago</p>
+          <div>
+            <p className="text-sm font-semibold  text-gray-800">{name}</p>
+            <p className="text-[12px] text-gray-500">17 hr. ago</p>
+          </div>
         </div>
-        <div className="relative">
-          <FiMoreHorizontal
-            className="cursor-pointer text-gray-700"
-            size={24}
-            onClick={toggleOptions}
-          />
-          {showOptions && (
-            <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10">
-              <button
-                onClick={handleUpdate}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                Edit
-              </button>
-              <button
-                onClick={handleDelete}
-                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-              >
-                Delete
-              </button>
-            </div>
-          )}
-        </div>
+        <button
+          onClick={handleFollow}
+          className={`text-sm px-4 py-1 rounded-md ${
+            isFollowing ? "bg-gray-300 text-black" : "bg-[#ff4500] text-white"
+          }`}
+        >
+          {isFollowing ? "Following" : "Follow"}
+        </button>
       </div>
 
       {/* Body */}
       <div className="p-4">
-        <p className="text-sm text-gray-800 mb-2">{instructions || ""}</p>
+        <h2 className="text-xl font-semibold mb-2">{instructions || ""}</h2>
         {image && image[0] ? (
           <div className="relative w-full h-[300px]">
             <Image
               src={image[0]}
               alt="recipe image"
               layout="fill"
-              objectFit="contain"
-              className="rounded-lg mt-2"
+              objectFit="cover"
+              className="rounded-lg"
             />
           </div>
         ) : (

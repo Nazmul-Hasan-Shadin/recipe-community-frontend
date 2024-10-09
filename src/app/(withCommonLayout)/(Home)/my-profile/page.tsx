@@ -15,30 +15,43 @@ const UserProfile = async () => {
     const recipes = usersProfilePost?.data?.data || [];
 
     return (
-      <div className="text-black">
-        <div className="flex justify-between border-b-gray-700 border-b">
-          <div className="flex gap-3 items-center">
+      <div style={{ marginTop: "40px" }} className="text-black">
+        {/* Profile Info Section */}
+        <div className="flex justify-between items-center pb-6 border-b px-7 border-gray-200">
+          {/* Left Side: Profile Picture and Info */}
+          <div className="flex flex-col gap-4 ">
             <Image
               alt="profile image"
-              width={70}
-              height={70}
+              width={80}
+              height={80}
               className="rounded-full"
               src={
                 "https://avatars.githubusercontent.com/u/111014373?s=400&u=ba39b33fa6e1dae3e5e46cb00eb9c986b03a1439&v=4"
               }
             />
 
-            <div className="">
-              <h2 className="font-semibold">Anik Ahmed Khan</h2>
-              <span className="text-sm">400 followers</span>
+            <div>
+              <h2 className="font-semibold text-lg">Nazmul Hasan Shadin</h2>
+              <p className="text-sm text-gray-500">
+                114 followers • 94 connections
+              </p>
+              <p className="text-sm text-gray-400">Dhaka, Dhaka, Bangladesh</p>
+              <a href="#" className="text-sm text-blue-500">
+                Contact info
+              </a>
             </div>
           </div>
 
+          {/* Right Side: Edit Profile Button */}
           <div className="flex gap-3">
-            <Button style={{ backgroundColor: "#D93900", color: "white" }}>
-              Add to story
+            <Button
+              style={{ backgroundColor: "#FF4500", color: "white" }}
+              className="font-semibold"
+            >
+              Open to
             </Button>
-            <Button>Edit Profile</Button>
+            <Button className="font-semibold">Add profile section</Button>
+            <Button className="font-semibold">Enhance profile</Button>
           </div>
         </div>
 
