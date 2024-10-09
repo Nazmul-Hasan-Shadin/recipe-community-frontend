@@ -16,7 +16,8 @@ export default function Home() {
     const fetchDefaultRecipes = async () => {
       if (searchResults.length === 0) {
         const recipePost = await fetch(
-          "https://recipe-sharing-community.vercel.app/api/v1/recipe",
+          // "https://recipe-sharing-community.vercel.app/api/v1/recipe",
+          "http://localhost:5001/api/v1/recipe",
           {
             cache: "no-store",
           }

@@ -8,7 +8,13 @@ export interface Iuser {
   name: string;
   email: string;
   role: string;
+  profilePicture: string;
   userId: string;
+  bio?: string;
+  isPremium: boolean;
+  premiumExpiryDate?: Date;
+  followers: string;
+  following: string;
 }
 export interface TIngredient {
   name: string;

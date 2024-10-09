@@ -1,47 +1,87 @@
 "use client";
-import React, { useState } from "react";
-import SideBarOptions from "./sideBarOptions";
-import { sideBarLinks } from "./constants";
+import { useUser } from "@/src/context/user.provider";
+import { useGetSingleUser } from "@/src/hooks/auth.user";
+import Image from "next/image";
 
 const Sidebar = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const { user } = useUser();
+  console.log(user, "iam userbro");
+  const { data: fullUser } = useGetSingleUser(user?.userId as string);
 
-  // Sample data for the accordion
-  const customFeeds = [{ title: "Community", content: "Create a custom feed" }];
-
-  const toggleAccordion = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+  console.log(fullUser, "iam fulluser");
 
   return (
-    <div className="w-[270px] hidden md:block fixed top-12 h-[100vh] bg-white border rounded-lg shadow-lg p-4 left-0">
-      {/* Sidebar Links */}
-      <ul className="px-3">
-        <SideBarOptions links={sideBarLinks} />
-      </ul>
+    <div className="bg-white shadow-lg p-4 w-64 h-screen fixed">
+      {/* Profile Section */}
+      <div className="text-center">
+        <Image
+          src={user?.profilePicture as string} // Replace this with the actual image path
+          alt="Profile"
+          width={100}
+          height={100}
+          className="rounded-full mx-auto"
+        />
+        <h2 className="text-lg font-bold mt-2">Nazmul Hasan Shadin</h2>
+        <p className="text-gray-600 text-sm">
+          {fullUser?.bio || "Write here your bio "}
+        </p>
+      </div>
 
-      <hr className="my-4 border-gray-300" />
-
-      {/* Accordion for custom feeds */}
+      {/* Profile viewers */}
       <div className="mt-4">
-        {customFeeds.map((item, index) => (
-          <div key={index} className="border-b border-gray-300 last:border-b-0">
-            <div
-              className="flex justify-between items-center py-2 px-3 cursor-pointer bg-gray-100 hover:bg-gray-200 transition-colors duration-200 rounded-md"
-              onClick={() => toggleAccordion(index)}
-            >
-              <h4 className="text-[#0079d3] font-semibold">{item.title}</h4>
-              <span className="text-lg text-[#0079d3]">
-                {openIndex === index ? "-" : "+"}
-              </span>
-            </div>
-            {openIndex === index && (
-              <div className="py-2 px-3 bg-gray-50 border-l-4 border-[#0079d3]">
-                <p className="text-gray-700">{item.content}</p>
-              </div>
-            )}
-          </div>
-        ))}
+        <p className="text-gray-500 text-sm">Profile viewers</p>
+        <p className="font-semibold text-primary">3</p>
+        <p className="text-primary cursor-pointer">View all analytics</p>
+      </div>
+
+      {/* Premium section */}
+      <div className="mt-4 border-t pt-4">
+        <p className="text-sm text-gray-600">Network smarter with Premium</p>
+        {fullUser?.isPremium ? (
+          <p className="text-primary font-semibold">
+            {" "}
+            'You are Premium user . Explore world '
+          </p>
+        ) : (
+          <button className="text-sm font-semibold text-primary mt-2">
+            Try 1 month of Premium for BDTO
+          </button>
+        )}
+      </div>
+
+      {/* Saved items */}
+      <div className="mt-4">
+        <p className="font-bold text-gray-800">Saved items</p>
+      </div>
+
+      {/* Recent Section */}
+      <div className="mt-4">
+        <p className="text-gray-800 font-bold">Recent</p>
+        <ul className="text-gray-600 text-sm space-y-2 mt-2">
+          <li className="flex items-center">
+            <i className="fas fa-book mr-2"></i>
+            JavaScript
+          </li>
+          <li className="flex items-center">
+            <i className="fas fa-book mr-2"></i>
+            All things Javascript: JS, TypeScript...
+          </li>
+        </ul>
+      </div>
+
+      {/* Groups Section */}
+      <div className="mt-4">
+        <p className="text-gray-800 font-bold">Groups</p>
+        <ul className="text-gray-600 text-sm space-y-2 mt-2">
+          <li className="flex items-center">
+            <i className="fas fa-users mr-2"></i>
+            JavaScript
+          </li>
+          <li className="flex items-center">
+            <i className="fas fa-users mr-2"></i>
+            All things Javascript: JS, TypeScript, NodeJS, React, Angular...
+          </li>
+        </ul>
       </div>
     </div>
   );

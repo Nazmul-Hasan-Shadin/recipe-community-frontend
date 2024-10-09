@@ -2,7 +2,8 @@ import axios from "axios";
 import { cookies } from "next/headers";
 
 const axiosInstance = axios.create({
-  baseURL: "https://recipe-sharing-community.vercel.app/api/v1/",
+  // baseURL: "https://recipe-sharing-community.vercel.app/api/v1/",
+  baseURL: "http://localhost:5001/api/v1/",
 });
 
 axiosInstance.interceptors.request.use(

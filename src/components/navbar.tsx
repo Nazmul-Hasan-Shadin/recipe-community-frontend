@@ -45,7 +45,8 @@ export const Navbar = () => {
       if (value.trim() !== "") {
         try {
           const response = await axios.get(
-            `https://recipe-sharing-community.vercel.app/api/v1/recipe?searchTerm=${value}`
+            // `https://recipe-sharing-community.vercel.app/api/v1/recipe?searchTerm=${value}`
+            `http://localhost:5001/api/v1/recipe/?searchTerm=${value}`
           );
           console.log(response.data.data, "Updated searchResults in context");
           setSearchResults(response.data.data);

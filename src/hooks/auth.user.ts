@@ -9,6 +9,5 @@ export const useGetSingleUser = (userId: string) => {
     queryFn: async () => {
       return await findUserById(userId);
     },
-    enabled: !!userId,
   });
 };

@@ -12,6 +12,7 @@ interface DecodedToken extends JwtPayload {
   role: string;
   email: string;
   userId: string;
+  profilePicture: string;
 }
 
 export const registerUser = async (userData: FieldValues) => {
@@ -19,7 +20,8 @@ export const registerUser = async (userData: FieldValues) => {
 
   try {
     const res = await axios.post(
-      "https://recipe-sharing-community.vercel.app/api/v1/user/register",
+      // "https://recipe-sharing-community.vercel.app/api/v1/user/register",
+      "  http://localhost:5001/api/v1/user/register",
       userData,
       {
         headers: {
@@ -46,7 +48,10 @@ export const loginUser = async (userData: FieldValues) => {
   cookies().set("accessToken", res.data.data.accessToken);
 };
 
-export const getCurrentUser = async (): Promise<Iuser | undefined> => {
+export const getCurrentUser = async (): Promise<
+  | Pick<Iuser, "name" | "email" | "role" | "userId" | "profilePicture">
+  | undefined
+> => {
   const accessToken = cookies().get("accessToken")?.value;
 
   if (accessToken) {
@@ -58,6 +63,7 @@ export const getCurrentUser = async (): Promise<Iuser | undefined> => {
         role: decodedToken.role,
         email: decodedToken.email,
         userId: decodedToken.userId,
+        profilePicture: decodedToken.profilePicture,
       };
     } catch (error) {
       console.error("Error decoding token:", error);

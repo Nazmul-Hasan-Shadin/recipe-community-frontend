@@ -12,7 +12,7 @@ import { Iuser, Recipe } from "@/types"; // Make sure Recipe is imported if it's
 import axios from "axios";
 
 interface IUserProviderValues {
-  user: Iuser | undefined;
+  user: Partial<Iuser> | undefined;
   isLoading: boolean;
   setUser: (user: Iuser | undefined) => void;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
@@ -28,7 +28,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [user, setUser] = useState<Iuser | undefined>(undefined);
+  const [user, setUser] = useState<Partial<Iuser> | undefined>(undefined);
   const [searchResults, setSearchResults] = useState<Recipe[]>([]); // Using specific type for search results
 
   const handleUser = async () => {

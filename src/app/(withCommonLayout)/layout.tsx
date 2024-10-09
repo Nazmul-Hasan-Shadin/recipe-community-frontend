@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Navbar />
 
       {/* Main layout */}
-      <main className="container max-w-7xl mx-auto pt-16 px-6 flex-grow">
+      <main className="container max-w-7xl  pt-16 px-3 flex-grow">
         <div className="flex h-full">
           {/* Sidebar */}
           <aside className="w-64 h-full  p-4 overflow-hidden">
@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Main Content */}
           <section
             className="flex-grow  shadow-md rounded-lg p-6 mt-12"
-            style={{ marginLeft: "17rem", marginTop: "6rem" }} // Adjust the margin to account for the fixed sidebar width
+            style={{ marginLeft: "4rem", marginTop: "3rem" }} // Adjust the margin to account for the fixed sidebar width
           >
             {children}
           </section>
