@@ -73,7 +73,6 @@ const UpdateRecipeForm = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    // Create a FormData object to handle file uploads and other data
     const formData = new FormData();
 
     // Prepare the recipe data object
@@ -82,10 +81,8 @@ const UpdateRecipeForm = () => {
       ingredients,
       cookingTime,
       instructions,
-      // Example value, adjust as needed
     };
 
-    // Append the recipe data as a JSON string to the FormData object
     formData.append("data", JSON.stringify(recipeData));
 
     // Add the image files to the FormData object

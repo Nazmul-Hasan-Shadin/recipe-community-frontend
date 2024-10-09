@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { followUser, getFollowStatus } from "../services/Follows";
+import { toast } from "sonner";
 
 export const useFollowUser = () => {
   return useMutation({
@@ -10,6 +11,11 @@ export const useFollowUser = () => {
       return await followUser(targetUserId);
     },
     onSuccess: () => {
+      toast.success("Followed successful");
+      console.log("succes createrecip");
+    },
+    onError: (error) => {
+      toast.success(error.message || "something went worng");
       console.log("succes createrecip");
     },
   });

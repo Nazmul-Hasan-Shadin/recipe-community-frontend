@@ -4,6 +4,7 @@ import { useFollowUser, useGetFollowStatus } from "@/src/hooks/follow.hooks";
 import { useIncreasUpvote } from "@/src/hooks/recipes.hooks";
 import { Recipe } from "@/types";
 import { Avatar } from "@nextui-org/avatar";
+import { LinkIcon } from "@nextui-org/link";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -22,12 +23,12 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
     author,
     name,
     createdAt,
+    cookingTime,
+    ingredients,
     _id,
   } = recipe;
 
-  // Get the follow status for the author
   const { data: followedStatus } = useGetFollowStatus(author._id);
-
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isDisliked, setIsDisliked] = useState<boolean>(false);
   const [isVoting, setIsVoting] = useState(false);
-  const [showOptions, setShowOptions] = useState(false); // State to toggle options menu
+  const [showOptions, setShowOptions] = useState(false);
 
   const handleVote = async (voteType: "upvote" | "downvote") => {
     if (isVoting) return;
@@ -92,22 +93,22 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
     }
   };
 
-  // Handler for following/unfollowing users
   const handleFollow = async () => {
     try {
-      setIsFollowing((prev) => !prev); // Toggle follow status
+      setIsFollowing((prev) => !prev);
     } catch (error) {
       console.error("Error during follow action:", error);
     }
   };
 
-  // Handler for showing the options menu
   const toggleOptions = () => {
     setShowOptions((prev) => !prev);
   };
 
+  const authorId = author;
+
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-lg">
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-lg relative">
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b">
         <div className="flex items-center gap-2">
@@ -122,26 +123,50 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
           ) : (
             <Avatar name="user" />
           )}
-          <div>
-            <p className="text-sm font-semibold  text-gray-800">{name}</p>
-            <p className="text-[12px] text-gray-500">17 hr. ago</p>
+          <div className="flex items-center">
+            <div>
+              <p className="text-sm font-semibold text-gray-800">{name}</p>
+              <p className="text-[12px] text-gray-500">17 hr. ago</p>
+            </div>
+            <button
+              className="text-primary ml-2"
+              onClick={() => handleFollowUser(authorId)}
+            >
+              {isFollowing ? "Following" : "Follow"}
+            </button>
           </div>
         </div>
         <button
-          onClick={handleFollow}
-          className={`text-sm px-4 py-1 rounded-md ${
-            isFollowing ? "bg-gray-300 text-black" : "bg-[#ff4500] text-white"
-          }`}
+          onClick={toggleOptions}
+          className="text-gray-500 hover:text-gray-800"
         >
-          {isFollowing ? "Following" : "Follow"}
+          <FiMoreHorizontal size={24} />
         </button>
       </div>
 
       {/* Body */}
       <div className="p-4">
-        <h2 className="text-xl font-semibold mb-2">{instructions || ""}</h2>
+        <h2 className="text-md mb-2">{instructions || ""}</h2>
+        <p>
+          <span className="font-semibold text-[12px]">
+            Cooking time: {cookingTime}
+          </span>
+        </p>
+
+        {/* Ingredients List */}
+        <div className="mt-4">
+          <h3 className="font-semibold text-[12px] mb-2">Ingredients:</h3>
+          <ul className="list-disc list-inside">
+            {ingredients.map((ingredient, index) => (
+              <li key={index} className="text-sm text-gray-700">
+                {ingredient.name} - {ingredient.quantity}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {image && image[0] ? (
-          <div className="relative w-full h-[300px]">
+          <div className="relative w-full h-[300px] mt-4">
             <Image
               src={image[0]}
               alt="recipe image"
@@ -193,6 +218,20 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
           Share
         </button>
       </div>
+
+      {/* Options Menu */}
+      {showOptions && (
+        <div className="absolute right-4 top-12 bg-white shadow-md rounded-md w-32">
+          <Link href={`/edit-post/${_id}`}>
+            <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+              Edit
+            </button>
+          </Link>
+          <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 };

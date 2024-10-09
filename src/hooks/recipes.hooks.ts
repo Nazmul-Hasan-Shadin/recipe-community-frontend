@@ -16,6 +16,7 @@ import {
   increaseUpvote,
   updateRecipePost,
 } from "../services/ReceipServices";
+import { toast } from "sonner";
 
 export const useGetAllRecipe = (
   searchTerm: string,
@@ -44,7 +45,11 @@ export const useCreateRecipe = (): UseMutationResult<
       return await createRecipePost(recipeInfo);
     },
     onSuccess: () => {
+      toast.success("Your Recipe has Sumbitted ");
       console.log("succes createrecip");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Something went wrong ");
     },
   });
 };

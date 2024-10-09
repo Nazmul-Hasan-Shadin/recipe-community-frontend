@@ -20,41 +20,37 @@ import axios from "axios";
 import { GithubIcon, PlusIcon, SearchIcon } from "@/src/components/icons";
 import { siteConfig } from "@/config/site";
 import Register from "./register/Register";
-import { useUser } from "../context/user.provider"; // Use the custom hook
+import { useUser } from "../context/user.provider";
 import logo from "@/src/assets/logo.png";
 import { Avatar } from "@nextui-org/avatar";
 import { ThemeSwitch } from "./theme-switch";
+import LoginPage from "../app/login/page";
 
 export const Navbar = () => {
   const { setSearchResults } = useUser();
   const [searchTerms, setSearchTerms] = useState("");
-  const debounceTimeout = useRef<NodeJS.Timeout | null>(null); // Explicitly type the ref
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Explicitly type the event
     const value = e.target.value;
 
-    // Clear the existing timer if a new keystroke happens before the timeout
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
 
-    // Set a new timer that will trigger the API call after a short delay
     debounceTimeout.current = setTimeout(async () => {
       setSearchTerms(value);
       if (value.trim() !== "") {
         try {
           const response = await axios.get(
-            // `https://recipe-sharing-community.vercel.app/api/v1/recipe?searchTerm=${value}`
             `http://localhost:5001/api/v1/recipe/?searchTerm=${value}`
           );
-          console.log(response.data.data, "Updated searchResults in context");
           setSearchResults(response.data.data);
         } catch (error: any) {
           console.log(error.message);
         }
       }
-    }, 300); // 300ms delay for debouncing
+    }, 300);
   };
 
   const searchInput = (
@@ -62,7 +58,7 @@ export const Navbar = () => {
       onChange={handleSearch}
       aria-label="Search"
       classNames={{
-        inputWrapper: "bg-default-100",
+        inputWrapper: "bg-default-100 rounded-md shadow-sm",
         input: "text-sm",
       }}
       endContent={
@@ -80,13 +76,20 @@ export const Navbar = () => {
   );
 
   return (
-    <NextUINavbar className="fixed" maxWidth="xl" position="sticky" isBordered>
+    <NextUINavbar
+      className="fixed bg-white shadow-lg z-50"
+      maxWidth="xl"
+      position="sticky"
+      isBordered
+    >
       {/* Left Side (Brand and Links) */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
+          <NextLink className="flex justify-start items-center gap-2" href="/">
             <Image width={90} height={40} alt="logo" src={logo} />
-            <p className="font-bold -ml-4 text-red-600">Cooking Community</p>
+            <p className="font-bold text-xl text-[#FF4500]">
+              Cooking Community
+            </p>
           </NextLink>
         </NavbarBrand>
       </NavbarContent>
@@ -97,27 +100,44 @@ export const Navbar = () => {
 
       {/* Right Side (User & Buttons for Large Devices) */}
       <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
+        className="hidden sm:flex basis-1/5 sm:basis-full items-center gap-4"
         justify="end"
       >
         <NavbarItem>
-          <NextLink href="/my-profile">My Recipe</NextLink>
+          <NextLink href={"/my-profile"}>
+            <p>My Recipe</p>
+          </NextLink>
         </NavbarItem>
         <NavbarItem>
           <NextLink href="/create-post">
-            <Button endContent={<PlusIcon />}>Create</Button>
+            <Button
+              style={{ backgroundColor: "#FF4500", borderColor: "#FF4500" }}
+              className="text-white"
+              endContent={<PlusIcon />}
+            >
+              Create
+            </Button>
           </NextLink>
         </NavbarItem>
         <Register />
+        <LoginPage />
         <NavbarItem className="hidden md:flex">
-          <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
+          <Avatar
+            src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
+            className="border-2 border-[#FF4500]"
+          />
         </NavbarItem>
       </NavbarContent>
 
       {/* Dark Mode and Toggle for Small Devices */}
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
+        <Link
+          isExternal
+          aria-label="Github"
+          href={siteConfig.links.github}
+          className="text-[#FF4500]"
+        >
+          <GithubIcon />
         </Link>
         <ThemeSwitch />
         <NavbarMenuToggle />
@@ -125,7 +145,7 @@ export const Navbar = () => {
 
       {/* Sidebar Content for Small Devices */}
       <NavbarMenu>
-        {searchInput}
+        <div className="px-4 py-3">{searchInput}</div>
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
@@ -139,6 +159,7 @@ export const Navbar = () => {
                 }
                 href={item.href}
                 size="lg"
+                className="hover:text-[#FF4500]"
               >
                 {item.label}
               </Link>
