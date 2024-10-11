@@ -72,3 +72,7 @@ export const getCurrentUser = async (): Promise<
 
   return undefined; // Return undefined if the token is invalid or missing
 };
+
+export const logoutUser = async () => {
+  cookies().set("accessToken", "");
+};

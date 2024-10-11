@@ -6,6 +6,7 @@ import "react-markdown-editor-lite/lib/index.css";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
 import { useCreateRecipe } from "@/src/hooks/recipes.hooks";
+import { marked } from "marked";
 
 // Dynamically load the MdEditor component
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
@@ -62,10 +63,13 @@ const CreatePost = () => {
         formData.append(`image`, file);
       });
 
+      // Convert Markdown body to HTML
+      const htmlBody = marked(body);
+
       const data = {
         title,
         ingredients,
-        instructions: body,
+        instructions: htmlBody, // Use the HTML version of the body
         cookingTime: parseInt(cookingTime),
       };
       formData.append("data", JSON.stringify(data));
@@ -77,7 +81,7 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="container mx-auto mt-10 p-6">
+    <div style={{ marginLeft: "300px" }} className=" mx-auto  mt-10 p-6">
       <div className="mb-4">
         <h1 className="text-2xl font-bold">Create Recipe</h1>
       </div>

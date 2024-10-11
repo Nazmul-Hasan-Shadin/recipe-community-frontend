@@ -6,35 +6,34 @@ import { MdEdit } from "react-icons/md";
 
 const Post = () => {
   return (
-    <div className="flex flex-col items-center w-[512px] p-4 border rounded-md shadow-sm bg-white">
-      <div className="flex w-full ">
+    <div className="flex flex-col items-center w-full max-w-lg p-4 border rounded-md shadow-sm bg-white">
+      <div className="flex w-full items-center">
         <Image
           src="https://avatars.githubusercontent.com/u/111014373?s=400&u=ba39b33fa6e1dae3e5e46cb00eb9c986b03a1439&v=4"
           alt="User Profile"
-          width={50}
-          height={50}
+          width={40}
+          height={40}
           className="rounded-full"
         />
         <input
           type="text"
           placeholder="What recipe do you want to post or share?"
-          className="flex-1 ml-4 p-2  rounded-full  border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1   w-full ml-4 p-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
       {/* Buttons Section Below Input */}
-      <div className="mt-4 flex justify-between gap-2">
-        <div className="flex mr-7 gap-1 items-center">
+      <div className="mt-4 flex flex-wrap justify-between gap-1 md:gap-4 w-full">
+        <div className="flex gap-1 items-center">
           <MdEdit className="text-xl" />
-          Post
+          <span>Post</span>
         </div>
-        <div className="flex mr-7 gap-1 items-center">
+        <div className="flex gap-1 items-center">
           <FiEdit className="text-xl" />
-          Answer
+          <span>Answer</span>
         </div>
-
-        <div className="flex mr-7 gap-1 items-center">
-          <AiFillQuestionCircle />
-          Question
+        <div className="flex gap-1 items-center">
+          <AiFillQuestionCircle className="text-xl" />
+          <span>Question</span>
         </div>
       </div>
     </div>

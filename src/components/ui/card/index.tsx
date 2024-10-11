@@ -1,35 +1,25 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import { useUser } from "@/src/context/user.provider";
 import { useFollowUser, useGetFollowStatus } from "@/src/hooks/follow.hooks";
-import { useIncreasUpvote } from "@/src/hooks/recipes.hooks";
+import { useIncreasUpvote, useRateRecipe } from "@/src/hooks/recipes.hooks";
 import { Recipe } from "@/types";
 import { Avatar } from "@nextui-org/avatar";
-import { LinkIcon } from "@nextui-org/link";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { AiFillLike, AiFillDislike, AiFillMessage } from "react-icons/ai";
+import { AiFillLike, AiFillDislike, AiFillMessage, AiFillStar } from "react-icons/ai";
 import { FiMoreHorizontal } from "react-icons/fi";
+import { IoMdShareAlt } from "react-icons/io";
 
 const Card = ({ recipe }: { recipe: Recipe }) => {
   const { user } = useUser();
   const { mutate } = useIncreasUpvote();
   const { mutate: handleFollowUser } = useFollowUser();
-  const {
-    instructions,
-    image,
-    upvotes,
-    downvotes,
-    author,
-    name,
-    createdAt,
-    cookingTime,
-    ingredients,
-    _id,
-  } = recipe;
+  const{mutate:handleRateRecipe}=useRateRecipe()
+  const { instructions, image, upvotes, downvotes, author, name, createdAt, cookingTime, ingredients, _id, ratings } = recipe;
 
-  const { data: followedStatus } = useGetFollowStatus(author._id);
-  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const { data: followedStatus } = useGetFollowStatus(author?._id);
+  const [isFollowing, setIsFollowing] = useState<boolean>(followedStatus?.isFollowing || false);
 
   useEffect(() => {
     if (followedStatus?.isFollowing !== undefined) {
@@ -43,6 +33,10 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
   const [isDisliked, setIsDisliked] = useState<boolean>(false);
   const [isVoting, setIsVoting] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+
+  // Rating state
+  const [userRating, setUserRating] = useState<number | null>(null); 
+  const averageRating = ratings.length > 0 ? ratings.reduce((acc, curr) => acc + curr.rating, 0) / ratings.length : 0;
 
   const handleVote = async (voteType: "upvote" | "downvote") => {
     if (isVoting) return;
@@ -95,7 +89,9 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
 
   const handleFollow = async () => {
     try {
-      setIsFollowing((prev) => !prev);
+      const newFollowStatus = !isFollowing;
+      await handleFollowUser(author?._id); // Assuming handleFollowUser takes author ID as argument
+      setIsFollowing(newFollowStatus);
     } catch (error) {
       console.error("Error during follow action:", error);
     }
@@ -105,7 +101,19 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
     setShowOptions((prev) => !prev);
   };
 
-  const authorId = author;
+  // Handle rating submission
+  const handleRate = async (rating: number) => {
+    if (!user) return; 
+
+    setUserRating(rating);
+    
+
+    try {
+      await handleRateRecipe({ recipeId: _id, userId: user._id, rating }); 
+    } catch (error) {
+      console.error("Error submitting rating:", error);
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-lg relative">
@@ -130,7 +138,7 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
             </div>
             <button
               className="text-primary ml-2"
-              onClick={() => handleFollowUser(authorId)}
+              onClick={handleFollow}
             >
               {isFollowing ? "Following" : "Follow"}
             </button>
@@ -146,7 +154,10 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
 
       {/* Body */}
       <div className="p-4">
-        <h2 className="text-md mb-2">{instructions || ""}</h2>
+        <h2 className="text-md mb-2">
+       
+          <div dangerouslySetInnerHTML={{ __html: instructions || "" }} />
+        </h2>
         <p>
           <span className="font-semibold text-[12px]">
             Cooking time: {cookingTime}
@@ -191,7 +202,7 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
           >
             <AiFillLike
               size={24}
-              className={isLiked ? "text-blue-500" : "text-gray-500"}
+              className={isLiked ? "text-[#00725A]" : "text-gray-500"}
             />
             <span className="ml-1 text-gray-700">{likeCount}</span>
           </div>
@@ -209,29 +220,26 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
 
           <div className="flex items-center">
             <AiFillMessage size={24} className="text-gray-500" />
-            <Link href={`/comments/${_id}`} className="ml-1 text-gray-700">
-              Comments
+            <Link href={`/user/${author?._id}/comments`}>
+              <span className="ml-1 text-gray-700">Comment</span>
             </Link>
           </div>
         </div>
-        <button className="bg-gray-200 text-gray-700 px-3 py-1 rounded-md hover:bg-gray-300 transition-all">
-          Share
-        </button>
-      </div>
 
-      {/* Options Menu */}
-      {showOptions && (
-        <div className="absolute right-4 top-12 bg-white shadow-md rounded-md w-32">
-          <Link href={`/edit-post/${_id}`}>
-            <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
-              Edit
-            </button>
-          </Link>
-          <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
-            Delete
-          </button>
+        {/* Rating Section */}
+        <div className="flex items-center space-x-1">
+          <span className="font-semibold">Rating:</span>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <AiFillStar
+              key={star}
+              size={24}
+              className={userRating === star ? "text-yellow-500" : "text-gray-400"}
+              onClick={() => handleRate(star)}
+            />
+          ))}
+          <span className="ml-2 text-gray-600 text-xl" >({averageRating.toFixed(1)})</span>
         </div>
-      )}
+      </div>
     </div>
   );
 };

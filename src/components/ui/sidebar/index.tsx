@@ -3,8 +3,13 @@ import { useState } from "react";
 import { useUser } from "@/src/context/user.provider";
 import { useGetSingleUser } from "@/src/hooks/auth.user";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 
 const Sidebar = () => {
+  const pathname = usePathname();
+   
+  
+
   const { user } = useUser();
   const { data: fullUser } = useGetSingleUser(user?.userId as string);
 

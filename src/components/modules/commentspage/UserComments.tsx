@@ -35,7 +35,7 @@ const UserComments = ({
           height={40}
         />
         <div className="bg-gray-50 p-2">
-          <p className=""> {comment?.userId!.username} </p>
+          <p className=""> {comment?.userId?.username} </p>
           <p className="text-gray-600 text-sm">{comment?.content}</p>
         </div>
       </div>

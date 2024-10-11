@@ -1,10 +1,11 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getAllComment,
   getSingleUser,
   makeComment,
 } from "../services/Comments";
 import { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
 
 export const useGetUserWhoDoComment = (userId: string) => {
   return useQuery({
@@ -14,14 +15,22 @@ export const useGetUserWhoDoComment = (userId: string) => {
 };
 
 export const useMakeComment = () => {
+  const queryClient = useQueryClient();
+
   return useMutation<any, Error, FieldValues>({
     mutationKey: ["comment"],
     mutationFn: async ({ recipeId, content }) => {
       return await makeComment(recipeId, content);
     },
+    onSuccess: (_, variables) => {
+      const { recipeId } = variables; // Destructure recipeId from variables
+      // Invalidate and refetch the comments for the specific recipe
+      queryClient.invalidateQueries({
+        queryKey: ["getallcomment", recipeId],
+      });
+    },
   });
 };
-
 // export const useGetAllComment = () => {
 //   return useQuery<any, Error, FieldValues>({
 //     queryKey: ["getallcomment"],

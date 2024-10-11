@@ -10,7 +10,7 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@nextui-org/navbar";
-import { Button } from "@nextui-org/button";
+import { Button, ButtonGroup } from "@nextui-org/button";
 import { Kbd } from "@nextui-org/kbd";
 import { Link } from "@nextui-org/link";
 import NextLink from "next/link";
@@ -19,18 +19,21 @@ import { Input } from "@nextui-org/input";
 import axios from "axios";
 import { GithubIcon, PlusIcon, SearchIcon } from "@/src/components/icons";
 import { siteConfig } from "@/config/site";
-import Register from "./register/Register";
 import { useUser } from "../context/user.provider";
 import logo from "@/src/assets/logo.png";
 import { Avatar } from "@nextui-org/avatar";
 import { ThemeSwitch } from "./theme-switch";
 import LoginPage from "../app/login/page";
+import { useLogoutUser } from "../hooks/auth.hooks";
+import { logoutUser } from "../services/AuthServices";
+import Register from "./register/Register";
 
 export const Navbar = () => {
   const { setSearchResults } = useUser();
   const [searchTerms, setSearchTerms] = useState("");
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
+  const { user } = useUser();
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
@@ -85,9 +88,12 @@ export const Navbar = () => {
       {/* Left Side (Brand and Links) */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-2" href="/">
+          <NextLink
+            className="flex justify-start items-center  md:gap-2"
+            href="/"
+          >
             <Image width={90} height={40} alt="logo" src={logo} />
-            <p className="font-bold text-xl text-[#FF4500]">
+            <p className="font-bold text-sm md:text-xl text-[#FF4500]">
               Cooking Community
             </p>
           </NextLink>
@@ -109,7 +115,7 @@ export const Navbar = () => {
           </NextLink>
         </NavbarItem>
         <NavbarItem>
-          <NextLink href="/create-post">
+          <NextLink href="/user/create-post">
             <Button
               style={{ backgroundColor: "#FF4500", borderColor: "#FF4500" }}
               className="text-white"
@@ -119,8 +125,12 @@ export const Navbar = () => {
             </Button>
           </NextLink>
         </NavbarItem>
-        <Register />
-        <LoginPage />
+        {user ? (
+          <Button onClick={() => useLogoutUser()}> Log Out</Button>
+        ) : (
+          <Register />
+        )}
+        {user ? null : <LoginPage />}
         <NavbarItem className="hidden md:flex">
           <Avatar
             src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
@@ -154,8 +164,8 @@ export const Navbar = () => {
                   index === 2
                     ? "primary"
                     : index === siteConfig.navMenuItems.length - 1
-                    ? "danger"
-                    : "foreground"
+                      ? "danger"
+                      : "foreground"
                 }
                 href={item.href}
                 size="lg"

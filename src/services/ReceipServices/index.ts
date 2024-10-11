@@ -3,9 +3,9 @@ import axiosInstance from "@/src/lib/axiosInstance";
 import { Recipe } from "@/types";
 
 export const getAllRecipe = async (
-  searchTerm: string,
-  page: number,
-  limit: number
+  searchTerm?: string,
+  page?: number,
+  limit?: number
 ) => {
   console.log(searchTerm, page, limit);
   const res = await axiosInstance.get("recipe", {
@@ -18,7 +18,7 @@ export const getAllRecipe = async (
 
   console.log(res.data);
 
-  return res;
+  return res.data;
 };
 
 export const createRecipePost = async (recipieInfo: FormData) => {
@@ -64,6 +64,14 @@ export const getUsersRecipe = async () => {
   return res;
 };
 
+export const deleteRecipe = async (recipeId: string, isDeleted: boolean) => {
+  const res = await axiosInstance.patch(`/recipe/delete/${recipeId}`, {
+    isDeleted,
+  });
+
+  console.log(res.data);
+  return res;
+};
 export const updateRecipePost = async (id: string, recipeInfo: FormData) => {
   console.log("Updating recipe with ID:", id);
 
@@ -80,4 +88,20 @@ export const updateRecipePost = async (id: string, recipeInfo: FormData) => {
     console.error("Error updating recipe:", error);
     throw error; // Propagate the error for further handling
   }
+};
+
+export const togglePublishRecipe = async (recipeId: string, action: string) => {
+  const res = await axiosInstance.post(`/recipe/${recipeId}/toggle-publish`, {
+    action,
+  });
+  console.log(res.data);
+  return res.data;
+};
+
+export const rateRecipe = async (
+  recipeId: string,
+  userId: string,
+  rating: number
+) => {
+  return await axiosInstance.patch(`/recipe/${recipeId}/rate`, { rating });
 };
