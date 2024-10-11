@@ -10,13 +10,14 @@ import Link from "next/link";
 import { AiFillLike, AiFillDislike, AiFillMessage, AiFillStar } from "react-icons/ai";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { IoMdShareAlt } from "react-icons/io";
+import Rating from "react-rating";
 
 const Card = ({ recipe }: { recipe: Recipe }) => {
   const { user } = useUser();
   const { mutate } = useIncreasUpvote();
   const { mutate: handleFollowUser } = useFollowUser();
-  const{mutate:handleRateRecipe}=useRateRecipe()
-  const { instructions, image, upvotes, downvotes, author, name, createdAt, cookingTime, ingredients, _id, ratings } = recipe;
+  const { mutate: handleRateRecipe } = useRateRecipe();
+  const { instructions='', image, upvotes, downvotes, author, name, createdAt, cookingTime, ingredients, _id, ratings } = recipe || {};
 
   const { data: followedStatus } = useGetFollowStatus(author?._id);
   const [isFollowing, setIsFollowing] = useState<boolean>(followedStatus?.isFollowing || false);
@@ -35,8 +36,8 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
   const [showOptions, setShowOptions] = useState(false);
 
   // Rating state
-  const [userRating, setUserRating] = useState<number | null>(null); 
-  const averageRating = ratings.length > 0 ? ratings.reduce((acc, curr) => acc + curr.rating, 0) / ratings.length : 0;
+  const [userRating, setUserRating] = useState<number | null>(null);
+  const averageRating = ratings?.length > 0 ? ratings.reduce((acc, curr) => acc + curr.rating, 0) / ratings.length : 0;
 
   const handleVote = async (voteType: "upvote" | "downvote") => {
     if (isVoting) return;
@@ -90,7 +91,7 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
   const handleFollow = async () => {
     try {
       const newFollowStatus = !isFollowing;
-      await handleFollowUser(author?._id); // Assuming handleFollowUser takes author ID as argument
+      await handleFollowUser(author?._id);
       setIsFollowing(newFollowStatus);
     } catch (error) {
       console.error("Error during follow action:", error);
@@ -103,13 +104,12 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
 
   // Handle rating submission
   const handleRate = async (rating: number) => {
-    if (!user) return; 
+    if (!user) return;
 
     setUserRating(rating);
-    
 
     try {
-      await handleRateRecipe({ recipeId: _id, userId: user._id, rating }); 
+      await handleRateRecipe({ recipeId: _id, userId: user._id, rating });
     } catch (error) {
       console.error("Error submitting rating:", error);
     }
@@ -136,18 +136,12 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
               <p className="text-sm font-semibold text-gray-800">{name}</p>
               <p className="text-[12px] text-gray-500">17 hr. ago</p>
             </div>
-            <button
-              className="text-primary ml-2"
-              onClick={handleFollow}
-            >
+            <button className="text-primary ml-2" onClick={handleFollow}>
               {isFollowing ? "Following" : "Follow"}
             </button>
           </div>
         </div>
-        <button
-          onClick={toggleOptions}
-          className="text-gray-500 hover:text-gray-800"
-        >
+        <button onClick={toggleOptions} className="text-gray-500 hover:text-gray-800">
           <FiMoreHorizontal size={24} />
         </button>
       </div>
@@ -155,7 +149,6 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
       {/* Body */}
       <div className="p-4">
         <h2 className="text-md mb-2">
-       
           <div dangerouslySetInnerHTML={{ __html: instructions || "" }} />
         </h2>
         <p>
@@ -168,7 +161,7 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
         <div className="mt-4">
           <h3 className="font-semibold text-[12px] mb-2">Ingredients:</h3>
           <ul className="list-disc list-inside">
-            {ingredients.map((ingredient, index) => (
+            {ingredients?.map((ingredient, index) => (
               <li key={index} className="text-sm text-gray-700">
                 {ingredient.name} - {ingredient.quantity}
               </li>
@@ -220,25 +213,25 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
 
           <div className="flex items-center">
             <AiFillMessage size={24} className="text-gray-500" />
-            <Link href={`/user/${author?._id}/comments`}>
+            <Link href={`/user/comments/${_id}`}>
               <span className="ml-1 text-gray-700">Comment</span>
             </Link>
           </div>
         </div>
 
         {/* Rating Section */}
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-2">
           <span className="font-semibold">Rating:</span>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <AiFillStar
-              key={star}
-              size={24}
-              className={userRating === star ? "text-yellow-500" : "text-gray-400"}
-              onClick={() => handleRate(star)}
-            />
-          ))}
-          <span className="ml-2 text-gray-600 text-xl" >({averageRating.toFixed(1)})</span>
+          <Rating
+            initialRating={userRating || averageRating}
+            emptySymbol={<AiFillStar size={24} className="text-gray-400" />}
+            fullSymbol={<AiFillStar size={24} className="text-orange-500" />}
+            fractions={2}
+            onClick={handleRate}
+          />
         </div>
+
+        <IoMdShareAlt size={24} className="text-gray-500" />
       </div>
     </div>
   );

@@ -32,3 +32,29 @@ export const getAllComment = async (recipeId: string) => {
   }
   // cookies().set('accessToken',res.data.accessToken)
 };
+
+export const deleteComment = async (commentId: string): Promise<void> => {
+  console.log(commentId, "iam commentId");
+
+  try {
+    const result = await axiosInstance.delete(`/recipe/${commentId}/comments`);
+    console.log(result);
+  } catch (error) {
+    throw new Error("Failed to delete comment.");
+  }
+};
+
+interface EditCommentParams {
+  commentId: string;
+  content: string;
+}
+
+export const editComment = async ({
+  commentId,
+  content,
+}: EditCommentParams) => {
+  const response = await axiosInstance.put(`/recipe/comments/${commentId}`, {
+    content,
+  });
+  return response.data;
+};

@@ -109,11 +109,22 @@ export const Navbar = () => {
         className="hidden sm:flex basis-1/5 sm:basis-full items-center gap-4"
         justify="end"
       >
+     
+{
+  user?.role==='admin' &&     <NavbarItem>
+  <NextLink href={"/admin"}>
+    <p>Dashboard</p>
+  </NextLink>
+</NavbarItem>
+
+}
         <NavbarItem>
           <NextLink href={"/my-profile"}>
             <p>My Recipe</p>
           </NextLink>
         </NavbarItem>
+
+
         <NavbarItem>
           <NextLink href="/user/create-post">
             <Button

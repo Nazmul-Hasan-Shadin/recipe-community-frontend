@@ -52,6 +52,8 @@ const CommentsPage = async ({ params }: CommentsPageProps) => {
     const postData: RecipeData = await postResponse.json();
     const post = postData.data;
 
+    console.log(postData, "fufjkkkkkkkkkkkkkkkklk");
+
     // Fetch the comments for the recipe
     const commentsResponse = await fetch(
       // `https://recipe-sharing-community.vercel.app/api/v1/recipe/${recipeId}/comments`,
