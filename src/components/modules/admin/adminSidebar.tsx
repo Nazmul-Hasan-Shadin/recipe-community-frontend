@@ -10,7 +10,7 @@ const AdminSideBar = () => {
         <ul className="space-y-2">
           <li>
             <Link
-              href="/(admin)/admin/users"
+              href="/admin/users"
               className="block p-2 rounded hover:bg-orange-600"
             >
               Manage Users
@@ -18,7 +18,7 @@ const AdminSideBar = () => {
           </li>
           <li>
             <Link
-              href="/(admin)/admin/recipes"
+              href="/admin/recipes"
               className="block p-2 rounded hover:bg-orange-600"
             >
               Manage Recipes
@@ -26,7 +26,7 @@ const AdminSideBar = () => {
           </li>
           <li>
             <Link
-              href="/(admin)/admin/settings"
+              href="/admin/settings"
               className="block p-2 rounded hover:bg-orange-600"
             >
               Settings

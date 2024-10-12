@@ -76,7 +76,6 @@ const CreatePost = () => {
 
       handleCreateRecipe(formData);
     } catch (error) {
-      console.log(error);
     }
   };
 

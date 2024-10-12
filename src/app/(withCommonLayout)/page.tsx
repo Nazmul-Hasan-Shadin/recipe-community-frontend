@@ -10,13 +10,12 @@ import Post from "@/src/components/modules/Post/Post";
 export default function Home() {
   const { searchResults } = useUser();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  console.log(searchResults, "from home");
 
   useEffect(() => {
     const fetchDefaultRecipes = async () => {
       if (searchResults.length === 0) {
         const recipePost = await fetch(
-          // "https://recipe-sharing-community.vercel.app/api/v1/recipe",
+          // "http://localhost:5001/api/v1/recipe",
           "http://localhost:5001/api/v1/recipe",
           {
             cache: "no-store",

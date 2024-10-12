@@ -35,7 +35,6 @@ const RecipeTable: React.FC = () => {
     }
   }, [allRecipePost]);
 
-  console.log(data,'iam reciperdata');
   
 
   const handlePublishToggle = (id: string) => {

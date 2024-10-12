@@ -22,7 +22,6 @@ const UserTable: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const { mutate: handleDeleteUser } = useDeleteUser();
   const { mutate: handleToggleUserStatus } = useChangeUserStatus();
-  console.log(allUsers, "all users");
 
   useEffect(() => {
     if (allUsers && allUsers.data) {

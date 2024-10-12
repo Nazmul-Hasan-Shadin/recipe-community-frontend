@@ -7,16 +7,23 @@ export const findUserById = async (userId: string) => {
     const response = await axiosInstance.get(`user/${userId}`);
 
     return response.data.data;
-  } catch (error) {
-    console.error("Error fetching user", error);
-    throw error;
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || "An error occurred";
+
+    throw new Error(errorMessage);
   }
 };
 
 export const getAllUsers = async () => {
-  const response = await axiosInstance.get(`/user`);
+  try {
+    const response = await axiosInstance.get(`/user`);
 
-  return response.data;
+    return response.data;
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || "An error occurred";
+
+    throw new Error(errorMessage);
+  }
 };
 
 export const changeUserStatus = async ({
@@ -26,19 +33,43 @@ export const changeUserStatus = async ({
   id: string;
   status: string;
 }): Promise<Iuser[]> => {
-  console.log(id, status, "iam inside chancge statuse");
+  try {
+    const response = await axiosInstance.patch(`/user/${id}/status`, {
+      status,
+    });
+    return response.data;
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || "An error occurred";
 
-  const response = await axiosInstance.patch(`/user/${id}/status`, {
-    status,
-  });
-  return response.data;
+    throw new Error(errorMessage);
+  }
+};
+
+export const updateUser = async (userData: FormData) => {
+  try {
+    const res = await axiosInstance.patch("user/update-profile", userData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return res.data;
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || "An error occurred";
+
+    throw new Error(errorMessage);
+  }
+
+  // cookies().set('accessToken',res.data.accessToken)
 };
 
 export const deleteUser = async (userId: string) => {
   try {
     const response = await axiosInstance.delete(`/user/${userId}`);
     return response.data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || "An error occurred";
+
+    throw new Error(errorMessage);
   }
 };

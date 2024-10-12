@@ -4,11 +4,12 @@ import {
   deleteUser,
   findUserById,
   getAllUsers,
+  updateUser,
 } from "../services/user";
 import { Iuser } from "@/types";
+import { toast } from "sonner";
 
 export const useGetSingleUser = (userId: string) => {
-  console.log(userId);
 
   return useQuery({
     queryKey: ["user"],
@@ -59,6 +60,22 @@ export const useChangeUserStatus = () => {
     onError: (error) => {
       console.error("Error changing user status:", error);
       // You can handle the error here, like showing a toast notification
+    },
+  });
+};
+
+export const useUpdateUser = () => {
+  return useMutation<void, Error, FormData>({
+    mutationKey: ["createuser"],
+    mutationFn: async (userData) => {
+
+      return await updateUser(userData);
+    },
+    onSuccess: () => {
+      toast.success("updated profile successful");
+    },
+    onError: (error) => {
+      toast.error(error.message)
     },
   });
 };

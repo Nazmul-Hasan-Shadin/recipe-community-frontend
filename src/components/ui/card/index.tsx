@@ -2,25 +2,59 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "@/src/context/user.provider";
 import { useFollowUser, useGetFollowStatus } from "@/src/hooks/follow.hooks";
-import { useIncreasUpvote, useRateRecipe } from "@/src/hooks/recipes.hooks";
+import {
+  useDeleteRecipeByuser,
+  useIncreasUpvote,
+  useRateRecipe,
+} from "@/src/hooks/recipes.hooks";
 import { Recipe } from "@/types";
 import { Avatar } from "@nextui-org/avatar";
 import Image from "next/image";
-import Link from "next/link";
-import { AiFillLike, AiFillDislike, AiFillMessage, AiFillStar } from "react-icons/ai";
+import {
+  AiFillLike,
+  AiFillDislike,
+  AiFillMessage,
+  AiFillStar,
+} from "react-icons/ai";
+
 import { FiMoreHorizontal } from "react-icons/fi";
 import { IoMdShareAlt } from "react-icons/io";
 import Rating from "react-rating";
+import { useParams } from "next/navigation"; // Use useParams for accessing params
+import Link from "next/link";
 
-const Card = ({ recipe }: { recipe: Recipe }) => {
+const Card = ({
+  recipe,
+  onDelete,
+}: {
+  recipe: Recipe;
+  onDelete?: (id: string) => void;
+}) => {
+  const { id } = useParams();
   const { user } = useUser();
-  const { mutate } = useIncreasUpvote();
+  const { mutate: handleIncreasUpvote } = useIncreasUpvote();
   const { mutate: handleFollowUser } = useFollowUser();
   const { mutate: handleRateRecipe } = useRateRecipe();
-  const { instructions='', image, upvotes, downvotes, author, name, createdAt, cookingTime, ingredients, _id, ratings } = recipe || {};
+  const {
+    instructions = "",
+    image,
+    upvotes,
+    downvotes,
+    author,
+    name,
+    createdAt,
+    cookingTime,
+    ingredients,
+    _id,
+    ratings,
+  } = recipe || {};
+
+  const { mutate: handleDeleteRecipeByUser } = useDeleteRecipeByuser();
 
   const { data: followedStatus } = useGetFollowStatus(author?._id);
-  const [isFollowing, setIsFollowing] = useState<boolean>(followedStatus?.isFollowing || false);
+  const [isFollowing, setIsFollowing] = useState<boolean>(
+    followedStatus?.isFollowing || false
+  );
 
   useEffect(() => {
     if (followedStatus?.isFollowing !== undefined) {
@@ -33,11 +67,14 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isDisliked, setIsDisliked] = useState<boolean>(false);
   const [isVoting, setIsVoting] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
+  const [showOptions, setShowOptions] = useState(false); // Manage options dropdown
 
   // Rating state
   const [userRating, setUserRating] = useState<number | null>(null);
-  const averageRating = ratings?.length > 0 ? ratings.reduce((acc, curr) => acc + curr.rating, 0) / ratings.length : 0;
+  const averageRating =
+    ratings?.length > 0
+      ? ratings.reduce((acc, curr) => acc + curr.rating, 0) / ratings.length
+      : 0;
 
   const handleVote = async (voteType: "upvote" | "downvote") => {
     if (isVoting) return;
@@ -62,7 +99,7 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
 
     try {
       setIsVoting(true);
-      await mutate(
+      await handleIncreasUpvote(
         { recipeId: _id, type: voteType },
         {
           onSuccess: (response) => {
@@ -70,7 +107,6 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
             setDislikeCount(response.data.downvoteCount);
           },
           onError: (error) => {
-            console.error("Error during voting:", error);
             if (voteType === "upvote") {
               setLikeCount((prevCount) => prevCount - 1);
               setIsLiked(false);
@@ -82,7 +118,6 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
         }
       );
     } catch (error) {
-      console.error("Unexpected error occurred:", error);
     } finally {
       setIsVoting(false);
     }
@@ -94,7 +129,6 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
       await handleFollowUser(author?._id);
       setIsFollowing(newFollowStatus);
     } catch (error) {
-      console.error("Error during follow action:", error);
     }
   };
 
@@ -109,9 +143,27 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
     setUserRating(rating);
 
     try {
-      await handleRateRecipe({ recipeId: _id, userId: user._id, rating });
+      await handleRateRecipe({
+        recipeId: _id,
+        userId: user._id as string,
+        rating,
+      });
     } catch (error) {
-      console.error("Error submitting rating:", error);
+    }
+  };
+
+  const handleEdit = () => {
+    window.location.href = `/user/edit-post/${_id}`;
+  };
+
+  const handleDelete = async () => {
+    if (confirm("Are you sure you want to delete this recipe?")) {
+      try {
+        await handleDeleteRecipeByUser(_id);
+        onDelete!(_id);
+        alert("Recipe deleted successfully");
+      } catch (error) {
+      }
     }
   };
 
@@ -141,9 +193,29 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
             </button>
           </div>
         </div>
-        <button onClick={toggleOptions} className="text-gray-500 hover:text-gray-800">
+        <button
+          onClick={toggleOptions}
+          className="text-gray-500 hover:text-gray-800"
+        >
           <FiMoreHorizontal size={24} />
         </button>
+        {/* Dropdown Options */}
+        {showOptions && (
+          <div className="absolute right-4 bg-white shadow-lg rounded-lg mt-2">
+            <button
+              onClick={handleEdit}
+              className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left"
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Body */}
@@ -191,47 +263,39 @@ const Card = ({ recipe }: { recipe: Recipe }) => {
         <div className="flex items-center space-x-4">
           <div
             onClick={() => handleVote("upvote")}
-            className="flex items-center cursor-pointer"
+            className={`flex items-center cursor-pointer ${
+              isLiked ? "text-blue-600" : "text-gray-600"
+            }`}
           >
-            <AiFillLike
-              size={24}
-              className={isLiked ? "text-[#00725A]" : "text-gray-500"}
-            />
-            <span className="ml-1 text-gray-700">{likeCount}</span>
+            <AiFillLike size={20} />
+            <span className="ml-1">{likeCount}</span>
           </div>
-
           <div
             onClick={() => handleVote("downvote")}
-            className="flex items-center cursor-pointer"
+            className={`flex items-center cursor-pointer ${
+              isDisliked ? "text-red-600" : "text-gray-600"
+            }`}
           >
-            <AiFillDislike
-              size={24}
-              className={isDisliked ? "text-red-500" : "text-gray-500"}
-            />
-            <span className="ml-1 text-gray-700">{dislikeCount}</span>
+            <AiFillDislike size={20} />
+            <span className="ml-1">{dislikeCount}</span>
           </div>
-
-          <div className="flex items-center">
-            <AiFillMessage size={24} className="text-gray-500" />
+          <div className="flex items-center cursor-pointer text-gray-600">
             <Link href={`/user/comments/${_id}`}>
-              <span className="ml-1 text-gray-700">Comment</span>
+              <AiFillMessage size={20} />
             </Link>
+            <span className="ml-1">0</span>
+          </div>
+          <div className="flex items-center cursor-pointer text-gray-600">
+            <IoMdShareAlt size={20} />
           </div>
         </div>
-
-        {/* Rating Section */}
-        <div className="flex items-center space-x-2">
-          <span className="font-semibold">Rating:</span>
-          <Rating
-            initialRating={userRating || averageRating}
-            emptySymbol={<AiFillStar size={24} className="text-gray-400" />}
-            fullSymbol={<AiFillStar size={24} className="text-orange-500" />}
-            fractions={2}
-            onClick={handleRate}
-          />
-        </div>
-
-        <IoMdShareAlt size={24} className="text-gray-500" />
+        {/* Rating Component */}
+        <Rating
+          emptySymbol={<AiFillStar className="text-gray-400" />}
+          fullSymbol={<AiFillStar className="text-yellow-500" />}
+          initialRating={userRating || averageRating}
+          onChange={handleRate}
+        />
       </div>
     </div>
   );

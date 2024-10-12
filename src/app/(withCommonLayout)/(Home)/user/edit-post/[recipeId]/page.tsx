@@ -31,7 +31,6 @@ const UpdateRecipeForm = () => {
         setInstructions(data.data.instructions);
         setImagePreviewUrls(data.data.images || []);
       } catch (error) {
-        console.error("Failed to fetch recipe data:", error);
       }
     };
 

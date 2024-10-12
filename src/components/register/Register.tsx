@@ -20,10 +20,7 @@ const Register = () => {
   const handleRegister: SubmitHandler<FieldValues> = async (registerInfo) => {
     const formData = new FormData();
 
-    console.log(registerInfo.profileImage[0], "0");
-    console.log(registerInfo.username);
-    console.log(registerInfo.email);
-
+  
     const data = {
       username: registerInfo.username,
       email: registerInfo.email,
@@ -39,7 +36,6 @@ const Register = () => {
   // Image preview handler (with explicit event type)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log(file, "file");
 
     if (file) {
       setImagePreview(URL.createObjectURL(file));

@@ -10,7 +10,6 @@ export const AddComment = ({ recipeId }: { recipeId: string }) => {
   // Handle comment submission
   const handleSubmit = async () => {
     if (comment.trim()) {
-      console.log("Submit comment:", comment);
 
       handleAddComment({ recipeId, content: comment });
       setComment(""); // Clear the input after submitting

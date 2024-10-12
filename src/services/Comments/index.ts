@@ -16,8 +16,12 @@ export const makeComment = async (recipeId: string, content: string) => {
     });
 
     return res;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.log(error, "comment error");
+
+    const errorMessage = error?.response?.data?.message || "An error occurred";
+
+    throw new Error(errorMessage);
   }
   // cookies().set('accessToken',res.data.accessToken)
 };
@@ -27,18 +31,17 @@ export const getAllComment = async (recipeId: string) => {
     const res = await axiosInstance.get(`/recipe/${recipeId}/comments`);
 
     return res;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || "An error occurred";
+
+    throw new Error(errorMessage);
   }
   // cookies().set('accessToken',res.data.accessToken)
 };
 
 export const deleteComment = async (commentId: string): Promise<void> => {
-  console.log(commentId, "iam commentId");
-
   try {
     const result = await axiosInstance.delete(`/recipe/${commentId}/comments`);
-    console.log(result);
   } catch (error) {
     throw new Error("Failed to delete comment.");
   }

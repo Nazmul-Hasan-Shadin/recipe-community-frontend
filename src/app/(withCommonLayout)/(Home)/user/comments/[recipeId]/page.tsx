@@ -41,7 +41,7 @@ const CommentsPage = async ({ params }: CommentsPageProps) => {
   try {
     // Fetch the recipe post details
     const postResponse = await fetch(
-      // `https://recipe-sharing-community.vercel.app/api/v1/recipe/${recipeId}`
+      // `http://localhost:5001/api/v1/recipe/${recipeId}`
       `http://localhost:5001/api/v1/recipe/${recipeId}`
     );
 
@@ -52,11 +52,10 @@ const CommentsPage = async ({ params }: CommentsPageProps) => {
     const postData: RecipeData = await postResponse.json();
     const post = postData.data;
 
-    console.log(postData, "fufjkkkkkkkkkkkkkkkklk");
 
     // Fetch the comments for the recipe
     const commentsResponse = await fetch(
-      // `https://recipe-sharing-community.vercel.app/api/v1/recipe/${recipeId}/comments`,
+      // `http://localhost:5001/api/v1/recipe/${recipeId}/comments`,
       `http://localhost:5001/api/v1/recipe/${recipeId}/comments`,
       {
         cache: "no-store",

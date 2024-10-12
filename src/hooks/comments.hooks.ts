@@ -35,22 +35,18 @@ export const useMakeComment = () => {
       return await makeComment(recipeId, content);
     },
     onSuccess: (_, variables) => {
-      const { recipeId } = variables; // Destructure recipeId from variables
-      // Invalidate and refetch the comments for the specific recipe
+      const { recipeId } = variables;
+
       queryClient.invalidateQueries({
         queryKey: ["getallcomment", recipeId],
       });
     },
+    onError: (error: any) => {
+      toast.error(error.message || "somehting went wrong");
+    },
   });
 };
-// export const useGetAllComment = () => {
-//   return useQuery<any, Error, FieldValues>({
-//     queryKey: ["getallcomment"],
-//     queryFn: async (recipeId) => {
-//       return await getAllComment(recipeId);
-//     },
-//   });
-// };
+
 
 export const useGetAllComment = (recipeId: string) => {
   return useQuery<any, Error>({
@@ -67,8 +63,6 @@ export const useDeleteComment = () => {
 
   return useMutation({
     mutationFn: async (commentId: string): Promise<void> => {
-      console.log(commentId, "iam comment id inside hook");
-
       await deleteComment(commentId);
     },
     onSuccess: () => {
@@ -78,8 +72,7 @@ export const useDeleteComment = () => {
       });
     },
     onError: (error: any) => {
-      toast.error("Something went wrong");
-      console.error("Error deleting comment:", error);
+      toast.error(error.message || "Something went wrong");
     },
   });
 };
@@ -97,8 +90,7 @@ export const useEditComment = (): UseMutationResult<
       toast.success("Comment updated successfully!");
     },
     onError: (error: Error) => {
-      toast.error("Failed to update the comment.");
-      console.error("Error updating comment:", error);
+      toast.error(error.message || "Failed to update the comment.");
     },
   });
 };

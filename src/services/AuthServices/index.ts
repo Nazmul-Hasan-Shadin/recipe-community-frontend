@@ -7,6 +7,7 @@ import { JwtPayload, jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 
 import { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
 interface DecodedToken extends JwtPayload {
   username: string;
   role: string;
@@ -16,12 +17,10 @@ interface DecodedToken extends JwtPayload {
 }
 
 export const registerUser = async (userData: FieldValues) => {
-  console.log(userData, "register dsatar");
-
   try {
     const res = await axios.post(
-      // "https://recipe-sharing-community.vercel.app/api/v1/user/register",
-      "  http://localhost:5001/api/v1/user/register",
+      // "http://localhost:5001/api/v1/user/register",
+      "http://localhost:5001/api/v1/user/register",
       userData,
       {
         headers: {
@@ -30,22 +29,31 @@ export const registerUser = async (userData: FieldValues) => {
       }
     );
 
-    console.log(res, "iam res");
-
     return res.data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || "An error occurred";
+    console.log(errorMessage);
+
+    throw new Error(errorMessage);
   }
 
   // cookies().set('accessToken',res.data.accessToken)
 };
 
 export const loginUser = async (userData: FieldValues) => {
-  console.log(userData, "iam user data from server");
+  try {
+    const res = await axiosInstance.post("user/login", userData);
 
-  const res = await axiosInstance.post("user/login", userData);
+    console.log("iam res", res);
 
-  cookies().set("accessToken", res.data.data.accessToken);
+    cookies().set("accessToken", res.data.data.accessToken);
+    return res.data;
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || "An error occurred";
+    console.log(errorMessage);
+
+    throw new Error(errorMessage);
+  }
 };
 
 export const getCurrentUser = async (): Promise<
@@ -71,6 +79,36 @@ export const getCurrentUser = async (): Promise<
   }
 
   return undefined; // Return undefined if the token is invalid or missing
+};
+
+export const changePassword = async (
+  oldPassword: string,
+  newPassword: string
+) => {
+  try {
+    const res = await axiosInstance.post("user/change-password", {
+      oldPassword,
+      newPassword,
+    });
+
+    return res;
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || "An error occurred";
+
+    throw new Error(errorMessage);
+  }
+};
+
+export const resetPasswordByEmail = async (email: string) => {
+  try {
+    const res = await axiosInstance.post("user/forget-password", { email });
+
+    return res;
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || "An error occurred";
+
+    throw new Error(errorMessage);
+  }
 };
 
 export const logoutUser = async () => {

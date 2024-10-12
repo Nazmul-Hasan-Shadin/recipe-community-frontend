@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="flex h-full">
           {/* Sidebar */}
           <aside
-            className={`${isAdminRoute ? "hidden" : "w-64 h-full md:p-4 overflow-hidden"}`}
+            className={`${isAdminRoute ? "hidden" : " w-44 md:w-64 h-full md:p-4 overflow-hidden"}`}
           >
             <Sidebar />
             {/* Conditional rendering */}
@@ -28,7 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Main Content */}
           <section
-            className="flex-grow md:ml-40 rounded-lg p-6 mt-12"
+            className="flex-grow md:ml-40 rounded-lg p-2 md:p-6 mt-12"
             style={{ marginTop: "4rem" }} // Adjust margin for fixed sidebar width
           >
             {children}

@@ -22,7 +22,7 @@ const UserComments = ({
     profilePicture?: {};
     _id: string;
   };
-  recipeId: string;
+  recipeId?: string;
 }) => {
   const { mutate: handleDelete } = useDeleteComment();
   const { mutate: handleUpdateComment } = useEditComment(); // Use this mutation for updating comments
@@ -50,7 +50,6 @@ const UserComments = ({
           setLoading(false);
         },
         onError: (error) => {
-          console.error("Error updating comment:", error);
           toast.error("Failed to update comment.");
           setLoading(false);
         },

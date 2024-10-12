@@ -6,17 +6,14 @@ export const useFollowUser = () => {
   return useMutation({
     mutationKey: ["followUser"],
     mutationFn: async (targetUserId: string) => {
-      console.log(targetUserId, "inside hook follow user");
 
       return await followUser(targetUserId);
     },
     onSuccess: () => {
       toast.success("Followed successful");
-      console.log("succes createrecip");
     },
     onError: (error) => {
       toast.success(error.message || "something went worng");
-      console.log("succes createrecip");
     },
   });
 };

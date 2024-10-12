@@ -24,12 +24,21 @@ const queryClient = new QueryClient();
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
 
+  // Set the initial theme to 'light'
+  const themePropsWithLight = {
+    ...themeProps,
+    defaultTheme: "light", // Set default theme to light
+    enableSystem: false, // Disable system preference
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <UserProvider>
         <Toaster />
         <NextUIProvider navigate={router.push}>
-          <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+          <NextThemesProvider {...themePropsWithLight}>
+            {children}
+          </NextThemesProvider>
         </NextUIProvider>
       </UserProvider>
     </QueryClientProvider>

@@ -50,7 +50,6 @@ export const Navbar = () => {
           );
           setSearchResults(response.data.data);
         } catch (error: any) {
-          console.log(error.message);
         }
       }
     }, 300);
@@ -109,21 +108,18 @@ export const Navbar = () => {
         className="hidden sm:flex basis-1/5 sm:basis-full items-center gap-4"
         justify="end"
       >
-     
-{
-  user?.role==='admin' &&     <NavbarItem>
-  <NextLink href={"/admin"}>
-    <p>Dashboard</p>
-  </NextLink>
-</NavbarItem>
-
-}
+        {user?.role === "admin" && (
+          <NavbarItem>
+            <NextLink href={"/admin"}>
+              <p>Dashboard</p>
+            </NextLink>
+          </NavbarItem>
+        )}
         <NavbarItem>
           <NextLink href={"/my-profile"}>
             <p>My Recipe</p>
           </NextLink>
         </NavbarItem>
-
 
         <NavbarItem>
           <NextLink href="/user/create-post">
@@ -175,8 +171,8 @@ export const Navbar = () => {
                   index === 2
                     ? "primary"
                     : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
+                    ? "danger"
+                    : "foreground"
                 }
                 href={item.href}
                 size="lg"
