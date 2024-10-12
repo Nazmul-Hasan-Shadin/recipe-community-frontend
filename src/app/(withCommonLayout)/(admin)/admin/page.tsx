@@ -1,4 +1,5 @@
-'use client'
+'use client';
+
 import DashboardContent from "@/src/components/modules/admin/DashboardContent";
 import Header from "@/src/components/modules/admin/Header";
 import RecipeTable from "@/src/components/modules/admin/RecipeTable";
@@ -12,8 +13,7 @@ export default function AdminDashboard() {
       <div className="flex flex-col flex-1">
         <main className="flex-1 p-6 overflow-y-auto">
           <DashboardContent />
-
-          <RecipeTable/>
+          <RecipeTable />
         </main>
       </div>
     </div>

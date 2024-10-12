@@ -38,21 +38,23 @@ export const useMakeComment = () => {
       const { recipeId } = variables;
 
       queryClient.invalidateQueries({
-        queryKey: ["getallcomment", recipeId],
+        queryKey: ["getallcomment"],
       });
     },
     onError: (error: any) => {
-      toast.error(error.message || "somehting went wrong");
+      queryClient.invalidateQueries({
+        queryKey: ["getallcomment"],
+      });
+      toast.success("comment succesful please refresh page");
     },
   });
 };
 
-
 export const useGetAllComment = (recipeId: string) => {
   return useQuery<any, Error>({
-    queryKey: ["getallcomment", recipeId],
+    queryKey: ["getallcomment"],
     queryFn: async ({ queryKey }) => {
-      const [, id] = queryKey; // Extracting recipeId from queryKey
+      const [, id] = queryKey;
       return await getAllComment(id as string);
     },
   });

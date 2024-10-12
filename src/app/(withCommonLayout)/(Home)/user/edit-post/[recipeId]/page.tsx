@@ -21,7 +21,7 @@ const UpdateRecipeForm = () => {
     const fetchRecipeData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/v1/recipe/${recipeId}`
+          `https://recipe-sharing-community.vercel.app/api/v1/recipe/${recipeId}`
         );
         const data = await response.json();
 
@@ -30,8 +30,7 @@ const UpdateRecipeForm = () => {
         setCookingTime(data.data.cookingTime);
         setInstructions(data.data.instructions);
         setImagePreviewUrls(data.data.images || []);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
 
     fetchRecipeData();

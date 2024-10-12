@@ -102,7 +102,7 @@ const UserProfileEdit = () => {
     }
 
     try {
-      await axios.post("http://localhost:5001/api/v1/user/forget-password", {
+      await axios.post("https://recipe-sharing-community.vercel.app/api/v1/user/forget-password", {
         email,
       });
       setEmailSuccess("Password reset link sent to your email.");

@@ -25,7 +25,6 @@ import { Avatar } from "@nextui-org/avatar";
 import { ThemeSwitch } from "./theme-switch";
 import LoginPage from "../app/login/page";
 import { useLogoutUser } from "../hooks/auth.hooks";
-import { logoutUser } from "../services/AuthServices";
 import Register from "./register/Register";
 
 export const Navbar = () => {
@@ -34,6 +33,7 @@ export const Navbar = () => {
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const { user } = useUser();
+  
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
@@ -46,10 +46,11 @@ export const Navbar = () => {
       if (value.trim() !== "") {
         try {
           const response = await axios.get(
-            `http://localhost:5001/api/v1/recipe/?searchTerm=${value}`
+            `https://recipe-sharing-community.vercel.app/api/v1/recipe/?searchTerm=${value}`
           );
           setSearchResults(response.data.data);
         } catch (error: any) {
+          console.error(error);
         }
       }
     }, 300);
@@ -132,6 +133,11 @@ export const Navbar = () => {
             </Button>
           </NextLink>
         </NavbarItem>
+        <NavbarItem>
+          <NextLink href={"/about"}>
+            <p>About</p>
+          </NextLink>
+        </NavbarItem>
         {user ? (
           <Button onClick={() => useLogoutUser()}> Log Out</Button>
         ) : (
@@ -164,24 +170,37 @@ export const Navbar = () => {
       <NavbarMenu>
         <div className="px-4 py-3">{searchInput}</div>
         <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-                }
-                href={item.href}
-                size="lg"
-                className="hover:text-[#FF4500]"
-              >
-                {item.label}
-              </Link>
+          <NavbarMenuItem>
+            <NextLink href="/" className="hover:text-[#FF4500]">Home</NextLink>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <NextLink href="/about" className="hover:text-[#FF4500]">About</NextLink>
+          </NavbarMenuItem>
+          {user?.role === "admin" && (
+            <NavbarMenuItem>
+              <NextLink href="/admin" className="hover:text-[#FF4500]">Dashboard</NextLink>
             </NavbarMenuItem>
-          ))}
+          )}
+          <NavbarMenuItem>
+            <NextLink href="/my-profile" className="hover:text-[#FF4500]">My Recipe</NextLink>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <NextLink href="/user/create-post" className="hover:text-[#FF4500]">Create</NextLink>
+          </NavbarMenuItem>
+          {user ? (
+            <NavbarMenuItem>
+              <Button onClick={() => useLogoutUser()} className="hover:text-[#FF4500]">Log Out</Button>
+            </NavbarMenuItem>
+          ) : (
+            <NavbarMenuItem>
+              <Register />
+            </NavbarMenuItem>
+          )}
+          {user ? null : (
+            <NavbarMenuItem>
+              <LoginPage />
+            </NavbarMenuItem>
+          )}
         </div>
       </NavbarMenu>
     </NextUINavbar>

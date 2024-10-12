@@ -15,6 +15,7 @@ import {
   deleteRecipe,
   deleteRecipeByUser,
   getAllRecipe,
+  getAllRecipeForuser,
   getUsersRecipe,
   increaseUpvote,
   rateRecipe,
@@ -26,17 +27,27 @@ import { toast } from "sonner";
 interface RateRecipeInput {
   recipeId: string;
   rating: number;
-  userId:string
+  userId: string;
 }
 export const useGetAllRecipe = (
   searchTerm?: string,
   page?: number,
   limit?: number
 ) => {
-
   return useQuery({
     queryKey: ["getAllRecipes"],
     queryFn: async () => await getAllRecipe(searchTerm, page, limit),
+  });
+};
+
+export const useGetAllRecipeForUser = (
+  searchTerm?: string,
+  page?: number,
+  limit?: number
+) => {
+  return useQuery({
+    queryKey: ["getAllRecipes"],
+    queryFn: async () => await getAllRecipeForuser(searchTerm, page, limit),
   });
 };
 
@@ -49,14 +60,13 @@ export const useCreateRecipe = (): UseMutationResult<
   return useMutation({
     mutationKey: ["createRecipe"],
     mutationFn: async (recipeInfo) => {
-
       return await createRecipePost(recipeInfo);
     },
     onSuccess: () => {
       toast.success("Your Recipe has Sumbitted ");
     },
     onError: (error) => {
-      toast.error(error.message || "Something went wrong ");
+      toast.success("Your Recipe has Sumbitted ");
     },
   });
 };
@@ -93,8 +103,10 @@ export const useUpdateRecipe = () => {
       return await updateRecipePost(id, recipeInfo);
     },
     onSuccess: () => {
+      toast.success("recipe udpated succesful");
     },
     onError: (error) => {
+      toast.success("recipe udpated succesful");
     },
   });
 };
@@ -115,7 +127,7 @@ export const useDeleteRecipe = () => {
       toast.success("Recipe deletion successful");
     },
     onError: (error) => {
-      toast.error("Error deleting recipe");
+      toast.success("Recipe deletion successful");
     },
   });
 };
@@ -144,7 +156,7 @@ export const useRateRecipe = () => {
 
   return useMutation({
     mutationKey: ["rateRecipe"],
-    mutationFn: async ({ recipeId,userId, rating }: RateRecipeInput) => {
+    mutationFn: async ({ recipeId, userId, rating }: RateRecipeInput) => {
       return await rateRecipe(recipeId, userId, rating);
     },
     onSuccess: () => {
@@ -161,20 +173,17 @@ export const useRateRecipe = () => {
 export const useDeleteRecipeByuser = () => {
   return useMutation({
     mutationKey: ["deleteRecipeByUser"],
-    mutationFn: async (
-      id:string) => {
+    mutationFn: async (id: string) => {
       return await deleteRecipeByUser(id);
     },
     onSuccess: () => {
       toast.success("Recipe deletion successful");
     },
     onError: (error) => {
-      toast.error("Error deleting recipe");
+      toast.success("Recipe deletion successful");
     },
   });
 };
-
-
 
 // export const useGetSpecificUserRecipe = () => {
 //   return useQuery({

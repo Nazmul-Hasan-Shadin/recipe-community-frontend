@@ -163,6 +163,7 @@ const Card = ({
         onDelete!(_id);
         alert("Recipe deleted successfully");
       } catch (error) {
+        
       }
     }
   };

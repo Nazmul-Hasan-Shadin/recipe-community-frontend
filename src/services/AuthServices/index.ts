@@ -19,8 +19,7 @@ interface DecodedToken extends JwtPayload {
 export const registerUser = async (userData: FieldValues) => {
   try {
     const res = await axios.post(
-      // "http://localhost:5001/api/v1/user/register",
-      "http://localhost:5001/api/v1/user/register",
+      "https://recipe-sharing-community.vercel.app/api/v1/user/register",
       userData,
       {
         headers: {

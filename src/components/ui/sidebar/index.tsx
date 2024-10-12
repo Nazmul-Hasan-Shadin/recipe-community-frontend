@@ -3,13 +3,10 @@ import { useState } from "react";
 import { useUser } from "@/src/context/user.provider";
 import { useGetSingleUser } from "@/src/hooks/auth.user";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const Sidebar = () => {
   const pathname = usePathname();
-   
-  
-
   const { user } = useUser();
   const { data: fullUser } = useGetSingleUser(user?.userId as string);
 
@@ -74,6 +71,18 @@ const Sidebar = () => {
         {/* Saved items */}
         <div className="mt-4">
           <p className="font-bold text-gray-800">Saved items</p>
+        </div>
+
+        {/* Cooking Tips Section */}
+        <div className="mt-4">
+          <h3 className="text-gray-800 font-bold">Cooking Tips</h3>
+          <ul className="text-gray-600 text-sm space-y-2 mt-2">
+            <li>1. Always taste your food before serving.</li>
+            <li>2. Use fresh ingredients for better flavor.</li>
+            <li>3. Preheat your oven for consistent baking results.</li>
+            <li>4. Let meat rest before slicing to retain juices.</li>
+            <li>5. Keep your knives sharp for safety and efficiency.</li>
+          </ul>
         </div>
 
         {/* Recent Section */}

@@ -75,8 +75,7 @@ const CreatePost = () => {
       formData.append("data", JSON.stringify(data));
 
       handleCreateRecipe(formData);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   return (
@@ -163,6 +162,7 @@ const CreatePost = () => {
           {/* Image Upload Section */}
           <div className="mb-4">
             <input
+              required
               type="file"
               multiple
               accept="image/*"

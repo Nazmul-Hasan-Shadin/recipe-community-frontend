@@ -40,7 +40,7 @@ const ResetPassPage = () => {
 
     try {
       const response = await axios.patch(
-        "http://localhost:5001/api/v1/user/reset-password",
+        "https://recipe-sharing-community.vercel.app/api/v1/user/reset-password",
         {
           userId: id,
           token: token,

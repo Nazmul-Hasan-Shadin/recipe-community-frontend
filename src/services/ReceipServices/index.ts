@@ -15,28 +15,38 @@ export const getAllRecipe = async (
     },
   });
 
+  return res.data;
+};
+
+export const getAllRecipeForuser = async (
+  searchTerm?: string,
+  page?: number,
+  limit?: number
+) => {
+  const res = await axiosInstance.get("recipe/users-recipe", {
+    params: {
+      searchTerm: searchTerm,
+      page: page,
+      limit: limit,
+    },
+  });
 
   return res.data;
 };
 
 export const createRecipePost = async (recipieInfo: FormData) => {
-
   try {
-
     const response = await axiosInstance.post(`recipe`, recipieInfo, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
     return response;
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 };
 
 export const increaseUpvote = async (id: string, type: string) => {
   try {
-
     const response = await axiosInstance.post(`user/${id}/upvote`, {
       recipeId: id,
       type: type,
@@ -64,17 +74,14 @@ export const deleteRecipe = async (recipeId: string, isDeleted: boolean) => {
 };
 
 export const deleteRecipeByUser = async (recipeId: string) => {
-
-  
-  const res = await axiosInstance.delete(`recipe/delete-user-recipe/${recipeId}`);
-
-  
+  const res = await axiosInstance.delete(
+    `recipe/delete-user-recipe/${recipeId}`
+  );
 
   return res;
 };
 
 export const updateRecipePost = async (id: string, recipeInfo: FormData) => {
-
   try {
     const response = await axiosInstance.patch(`recipe/${id}`, recipeInfo, {
       headers: {

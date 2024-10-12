@@ -1,4 +1,8 @@
-import { useDeleteRecipe, useGetAllRecipe, useTogglePublishRecipe } from "@/src/hooks/recipes.hooks";
+import {
+  useDeleteRecipe,
+  useGetAllRecipe,
+  useTogglePublishRecipe,
+} from "@/src/hooks/recipes.hooks";
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash, FaTrash } from "react-icons/fa";
 import { toast } from "sonner";
@@ -28,21 +32,18 @@ const RecipeTable: React.FC = () => {
             title: recipe.title,
             name: recipe.name,
             image: recipe.image[0],
-            isPublished: recipe.isPublished, // Corrected line
+            isPublished: recipe.isPublished,
             isDeleted: recipe.isDeleted,
           }))
       );
     }
   }, [allRecipePost]);
 
-  
-
   const handlePublishToggle = (id: string) => {
     const updatedRecipe = data.find((recipe) => recipe.id === id);
     if (updatedRecipe) {
       const action = updatedRecipe.isPublished ? "unpublish" : "publish";
 
-      // Optimistically update UI
       setData((prevData) =>
         prevData.map((recipe) =>
           recipe.id === id
@@ -76,30 +77,15 @@ const RecipeTable: React.FC = () => {
   const handleDelete = (id: string) => {
     const updatedRecipe = data.find((recipe) => recipe.id === id);
     if (updatedRecipe) {
-      // Optimistically update UI
       setData((prevData) =>
         prevData.map((recipe) =>
-          recipe.id === id ? { ...recipe, isDeleted: true, isPublished: false } : recipe
+          recipe.id === id
+            ? { ...recipe, isDeleted: true, isPublished: false }
+            : recipe
         )
       );
 
-      handleDeleteRecipe(
-        { id, isDeleted: true },
-        {
-          onSuccess: () => {
-            toast.success("Recipe deleted successfully!");
-          },
-          onError: (error) => {
-            // Revert state on error
-            setData((prevData) =>
-              prevData.map((recipe) =>
-                recipe.id === id ? { ...recipe, isDeleted: false } : recipe
-              )
-            );
-            toast.error(`Failed to delete recipe: ${error.message}`);
-          },
-        }
-      );
+      handleDeleteRecipe({ id, isDeleted: true });
     }
   };
 
@@ -108,11 +94,18 @@ const RecipeTable: React.FC = () => {
   }
 
   if (error) {
-    return <div className="text-red-500">Error fetching recipes: {error.message}</div>;
+    return (
+      <div className="text-red-500">
+        Error fetching recipes: {error.message}
+      </div>
+    );
   }
 
   return (
     <div className="overflow-x-auto">
+      <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+        Manage Recipes
+      </h2>
       <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
         <thead className="bg-gray-100">
           <tr>

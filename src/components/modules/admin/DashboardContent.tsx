@@ -1,5 +1,3 @@
-// /components/DashboardContent.tsx
-
 const DashboardContent = () => {
   return (
     <div className="bg-white shadow-md rounded p-6">
