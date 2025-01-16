@@ -8,18 +8,20 @@ import { cookies } from "next/headers";
 
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
+
 interface DecodedToken extends JwtPayload {
   username: string;
   role: string;
   email: string;
   userId: string;
+  isPremium: boolean;
   profilePicture: string;
 }
 
 export const registerUser = async (userData: FieldValues) => {
   try {
     const res = await axios.post(
-      "https://recipe-sharing-community.vercel.app/api/v1/user/register",
+      "http://localhost:5001/api/v1/user/register",
       userData,
       {
         headers: {
@@ -56,7 +58,10 @@ export const loginUser = async (userData: FieldValues) => {
 };
 
 export const getCurrentUser = async (): Promise<
-  | Pick<Iuser, "name" | "email" | "role" | "userId" | "profilePicture">
+  | Pick<
+      Iuser,
+      "name" | "email" | "role" | "userId" | "profilePicture" | "isPremium"
+    >
   | undefined
 > => {
   const accessToken = cookies().get("accessToken")?.value;
@@ -70,6 +75,7 @@ export const getCurrentUser = async (): Promise<
         role: decodedToken.role,
         email: decodedToken.email,
         userId: decodedToken.userId,
+        isPremium: decodedToken?.isPremium,
         profilePicture: decodedToken.profilePicture,
       };
     } catch (error) {

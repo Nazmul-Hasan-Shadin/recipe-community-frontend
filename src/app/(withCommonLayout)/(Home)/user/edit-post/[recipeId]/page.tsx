@@ -21,7 +21,7 @@ const UpdateRecipeForm = () => {
     const fetchRecipeData = async () => {
       try {
         const response = await fetch(
-          `https://recipe-sharing-community.vercel.app/api/v1/recipe/${recipeId}`
+          `http://localhost:5001/api/v1/recipe/${recipeId}`
         );
         const data = await response.json();
 

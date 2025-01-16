@@ -4,6 +4,12 @@ import { useUser } from "@/src/context/user.provider";
 import { useGetSingleUser } from "@/src/hooks/auth.user";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { MdLiveTv } from "react-icons/md";
+import { TbWorldCheck } from "react-icons/tb";
+import { ImProfile } from "react-icons/im";
+import { SiBuzzfeed } from "react-icons/si";
+import { RiHotelFill } from "react-icons/ri";
+import { FaChartBar } from "react-icons/fa";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -26,12 +32,12 @@ const Sidebar = () => {
       </button>
 
       <div
-        className={`bg-white mt-16 shadow-lg p-4 fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ${
+        className={`bg-white mt-16 shadow-lg p-4 fixed top-0 left-0 overflow-y-auto  z-40 transform transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:w-64`}
       >
         {/* Profile Section */}
-        <div className="text-center">
+        <div className="text-center border-b pb-4">
           <Image
             src={user?.profilePicture as string}
             alt="Profile"
@@ -39,78 +45,77 @@ const Sidebar = () => {
             height={100}
             className="rounded-full mx-auto"
           />
-          <h2 className="text-lg font-bold mt-2">Nazmul Hasan Shadin</h2>
+          <h2 className="text-lg font-bold mt-2">
+            {user?.name || "User Name"}
+          </h2>
           <p className="text-gray-600 text-sm">
             {fullUser?.bio || "Write here your bio"}
           </p>
         </div>
 
-        {/* Profile viewers */}
+        {/* New Feeds Section */}
         <div className="mt-4">
-          <p className="text-gray-500 text-sm">Profile viewers</p>
-          <p className="font-semibold text-primary">
-            {fullUser?.followers.length}
-          </p>
-          <p className="text-primary cursor-pointer">View all analytics</p>
-        </div>
-
-        {/* Premium section */}
-        <div className="mt-4 border-t pt-4">
-          <p className="text-sm text-gray-600">Network smarter with Premium</p>
-          {fullUser?.isPremium ? (
-            <p className="text-primary font-semibold">
-              You are a Premium user. Explore the world!
-            </p>
-          ) : (
-            <button className="text-sm font-semibold text-primary mt-2">
-              Try 1 month of Premium for BDTO
-            </button>
-          )}
-        </div>
-
-        {/* Saved items */}
-        <div className="mt-4">
-          <p className="font-bold text-gray-800">Saved items</p>
-        </div>
-
-        {/* Cooking Tips Section */}
-        <div className="mt-4">
-          <h3 className="text-gray-800 font-bold">Cooking Tips</h3>
-          <ul className="text-gray-600 text-sm space-y-2 mt-2">
-            <li>1. Always taste your food before serving.</li>
-            <li>2. Use fresh ingredients for better flavor.</li>
-            <li>3. Preheat your oven for consistent baking results.</li>
-            <li>4. Let meat rest before slicing to retain juices.</li>
-            <li>5. Keep your knives sharp for safety and efficiency.</li>
-          </ul>
-        </div>
-
-        {/* Recent Section */}
-        <div className="mt-4">
-          <p className="text-gray-800 font-bold">Recent</p>
-          <ul className="text-gray-600 text-sm space-y-2 mt-2">
+          <h3 className="text-gray-800 font-bold mb-2">New Feeds</h3>
+          <ul className="space-y-2">
             <li className="flex items-center">
-              <i className="fas fa-book mr-2"></i>
-              JavaScript
+              <div className="bg-blue-500 text-white p-2 rounded-full mr-3">
+                <MdLiveTv />
+              </div>
+              Newsfeed
             </li>
             <li className="flex items-center">
-              <i className="fas fa-book mr-2"></i>
-              All things JavaScript: JS, TypeScript...
+              <div className="bg-orange-500 text-white p-2 rounded-full mr-3">
+                <TbWorldCheck />
+              </div>
+              Badges
+            </li>
+            <li className="flex items-center">
+              <div className="bg-yellow-500 text-white p-2 rounded-full mr-3">
+                <SiBuzzfeed />
+              </div>
+              Explore Stories
+            </li>
+            <li className="flex items-center">
+              <div className="bg-red-500 text-white p-2 rounded-full mr-3">
+                ⚡
+              </div>
+              Popular Groups
+            </li>
+            <li className="flex items-center">
+              <div className="bg-blue-500 text-white p-2 rounded-full mr-3">
+                <ImProfile />
+              </div>
+              Author Profile
             </li>
           </ul>
         </div>
 
-        {/* Groups Section */}
-        <div className="mt-4">
-          <p className="text-gray-800 font-bold">Groups</p>
-          <ul className="text-gray-600 text-sm space-y-2 mt-2">
+        {/* More Pages Section */}
+        <div className="mt-6">
+          <h3 className="text-gray-800 font-bold mb-2">More Pages</h3>
+          <ul className="space-y-2">
             <li className="flex items-center">
-              <i className="fas fa-users mr-2"></i>
-              JavaScript
+              <div className="bg-blue-500 text-white p-2 rounded-full mr-3">
+                <FaChartBar />
+              </div>
+              <div className="flex justify-between w-full">
+                Email Box
+                <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                  584
+                </span>
+              </div>
             </li>
             <li className="flex items-center">
-              <i className="fas fa-users mr-2"></i>
-              All things JavaScript: JS, TypeScript, NodeJS, React, Angular...
+              <div className="bg-blue-500 text-white p-2 rounded-full mr-3">
+                <RiHotelFill />
+              </div>
+              Near Hotel
+            </li>
+            <li className="flex items-center">
+              <div className="bg-blue-500 text-white p-2 rounded-full mr-3">
+                🎉
+              </div>
+              Latest Event
             </li>
           </ul>
         </div>

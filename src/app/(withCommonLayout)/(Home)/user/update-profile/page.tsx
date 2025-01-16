@@ -102,7 +102,7 @@ const UserProfileEdit = () => {
     }
 
     try {
-      await axios.post("https://recipe-sharing-community.vercel.app/api/v1/user/forget-password", {
+      await axios.post("http://localhost:5001/api/v1/user/forget-password", {
         email,
       });
       setEmailSuccess("Password reset link sent to your email.");
@@ -114,7 +114,7 @@ const UserProfileEdit = () => {
 
   useEffect(() => {
     if (mainUser) {
-      setName(mainUser.name); 
+      setName(mainUser.name);
       setBio(mainUser.bio || ""); // Set the actual bio, default to empty if not available
       setProfileImage(
         mainUser.profilePicture || "https://www.gravatar.com/avatar/?d=mp"

@@ -7,6 +7,7 @@ import { Navbar } from "@/src/components/navbar";
 import Sidebar from "@/src/components/ui/sidebar";
 import { useState } from "react";
 import SortButton from "@/src/components/ui/sortButton/SortButton";
+import SideBarOptions from "@/src/components/ui/sidebar/sideBarOptions";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -19,13 +20,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative flex flex-col h-screen">
-      {/* Navbar */}
-      <Navbar />
-
       {/* Main layout */}
       <main className="container max-w-7xl pt-16 px-3 flex-grow">
         <div className="flex h-full">
           {/* Sidebar */}
+
+          <Sidebar />
 
           {/* Main Content */}
           <section
